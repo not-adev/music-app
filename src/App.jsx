@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Right from './components/Right'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Player from './components/Player'
 import Artist1 from './components/Artist1'
@@ -154,17 +154,17 @@ function App() {
           <Left />
         </div>
         <div className='right'>
-        <Right click_function={getVideoFromArtist}/>
+        {/* <Right click_function={getVideoFromArtist}/> */}
 
 
-          {/* <Routes> */}
-            {/* <Route path='/' element={<Right click_function={getVideoFromArtist}/>} /> */}
-            {/* <Route path='/artist1' element={<Artist1 click_function={getVideoFromArtist}/>} />
+          <Routes>
+            <Route path='/' element={<Right click_function={getVideoFromArtist}/>} />
+            <Route path='/artist1' element={<Artist1 click_function={getVideoFromArtist}/>} />
             <Route path='/artist2' element={<Artist2 click_function={getVideoFromArtist}/>} />
             <Route path='/artist3' element={<Artist3 click_function={getVideoFromArtist}/>} />
             <Route path='/artist4' element={<Artist4 click_function={getVideoFromArtist} />} />
             <Route path='/artist5' element={<Artist5 click_function={getVideoFromArtist}/>} />
-          </Routes> */}
+          </Routes>
         </div>
 
 
