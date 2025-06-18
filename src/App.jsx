@@ -154,17 +154,17 @@ function App() {
           <Left />
         </div>
         <div className='right'>
+        <Right click_function={getVideoFromArtist}/>
 
 
-
-          <Routes>
-            <Route path='/' element={<Right click_function={getVideoFromArtist}/>} />
-            <Route path='/artist1' element={<Artist1 click_function={getVideoFromArtist}/>} />
+          {/* <Routes> */}
+            {/* <Route path='/' element={<Right click_function={getVideoFromArtist}/>} /> */}
+            {/* <Route path='/artist1' element={<Artist1 click_function={getVideoFromArtist}/>} />
             <Route path='/artist2' element={<Artist2 click_function={getVideoFromArtist}/>} />
             <Route path='/artist3' element={<Artist3 click_function={getVideoFromArtist}/>} />
             <Route path='/artist4' element={<Artist4 click_function={getVideoFromArtist} />} />
             <Route path='/artist5' element={<Artist5 click_function={getVideoFromArtist}/>} />
-          </Routes>
+          </Routes> */}
         </div>
 
 
