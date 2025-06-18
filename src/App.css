@@ -1,0 +1,281 @@
+
+/* @import "tailwindcss"; */
+
+
+
+
+
+
+
+.song-player-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+
+}
+marquee{
+    /* backdrop-filter: blur(10px); */
+}
+
+@media only screen and (max-width: 1000px) {
+  marquee{
+
+
+  }
+}
+.slide-bar {
+    height: 2px;
+    border-radius: 12px;
+    margin-bottom:5px;
+}
+
+.btn img {
+    height: 20px;
+    background: transparent;
+}
+
+.btn {
+    border-radius: 31px;
+    border: none;
+    padding: 6px 8px;
+    margin: 0px 3px;
+}
+
+.song-main {
+    display: flex;
+    position: absolute;
+    gap: 5px;
+    top: 0;
+    left: 50%;
+     z-index: 20;
+    transform: translate(-50%, 0);
+}
+
+.song-list {
+    background-color: rgb(34, 34, 36);
+    padding: 5px 10px;
+    border-radius: 15px;
+   
+    border: 2px solid white;
+    overflow-y: auto;
+}
+
+.song-list::-webkit-scrollbar {
+    width: 0;
+}
+
+
+.mineBtn:hover {
+    background-color: #504f4f;
+}
+
+.song-img {
+    height: 43px;
+    width: 43px;
+    border-radius: 8px;
+
+}
+
+.mineBtn {
+    display: flex;
+    gap: 15px;
+    height: 70px;
+    width: 300px;
+    border-radius: 12px;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: rgb(34, 34, 36);
+    color: white;
+    border: none;
+    border-radius: inherit;
+    width: 300px;
+    padding: 2px px;
+
+}
+
+.search-back {
+    width: 50px;
+    height: 30px;
+    border: none;
+    border-radius:10px; 
+}
+.search-back:hover{
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.duration{
+    color: #a8a3a3;
+    display: flex;
+    font-size: x-small;
+    width: inherit;
+    justify-content: space-between;
+}
+.left{
+    align-self: flex-start;
+}
+
+
+  
+#main {
+    padding: 17px 25px;
+    color: white;
+    background-color: #2a2828;
+    position: absolute;
+    width: 100%;
+    top: 227px;
+
+}
+
+.bg-img {
+    display: flex;
+    width: inherit;
+    background-color: #7f8b7f;
+    height: 257px;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 18px;    
+    padding: 10px 30px 30px 20px;
+    gap: 10px;
+    position: relative;
+
+}
+.top{
+    display: flex;
+    width: 100%;
+    background-color: #7f8b7f;
+    height: 257px;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 18px;    
+    padding: 10px 30px 30px 20px;
+    gap: 10px;
+    position: relative;
+
+
+}
+
+.pls{    
+    height: 203px;
+    border-radius: 150px;
+    box-shadow: 0px 3px 20px 16px #5f5b5b;
+}
+
+#main h2 {
+    margin: 0px 10px 12px;
+}
+h1{
+    font-size: 100px;
+    font-weight: 900;
+}
+
+#song-list {
+    padding: 0px 0px 0px 33px;
+}
+
+.song-container {
+    display: flex;
+    gap: 15px;
+    height: 70px;
+    border-radius: 12px;
+    align-items: center;
+    padding: 5px 10px;
+
+}
+
+.song-container:hover {
+    background-color: #504f4f;
+}
+
+#song-list>a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+#main {
+    padding: 17px 25px;
+    color: white;
+    background-color: #2a2828;
+    position: absolute;
+    width: 100%;
+    top: 240px;
+
+}
+
+.bg-img {
+    display: flex;
+    width: inherit;
+    background-color: #7f8b7f;
+    height: 257px;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 18px;    
+    padding: 10px 30px 30px 20px;
+    gap: 10px;
+    position: relative;
+
+}
+.top{
+    display: flex;
+    width: inherit;
+    background-color: #7f8b7f;
+    height: 257px;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 18px;    
+    padding: 10px 30px 30px 20px;
+    gap: 10px;
+    position: relative;
+
+
+}
+
+.pls{    
+    height: 203px;
+    border-radius: 150px;
+    box-shadow: 0px 3px 20px 16px #5f5b5b;
+}
+
+#main h2 {
+    margin: 0px 10px 12px;
+}
+h1{
+    font-size: 100px;
+    font-weight: 900;
+}
+
+#song-list {
+    padding: 0px 0px 0px 33px;
+}
+
+.song-container {
+    display: flex;
+    gap: 15px;
+    height: 70px;
+    border-radius: 12px;
+    align-items: center;
+    padding: 5px 10px;
+
+}
+
+.song-container:hover {
+    background-color: #504f4f;
+}
+
+#song-list>a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.song-infoo {
+    font-size: 20px;
+}
+
+.song-img {
+    height: 43px;
+    width: 43px;
+    border-radius: 8px;
+
+}
