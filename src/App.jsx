@@ -177,6 +177,9 @@ function App() {
         {visible &&
           <div className='song-main'>
             <div className="song-list">
+               <button className='search-back' onClick={closeSearch}>
+              close
+            </button>
               {songsInfo.map((item) => (
                 <button className='mineBtn' key={item.etag} onClick={() => {
                   setPlayerVisible(true)
@@ -224,9 +227,7 @@ function App() {
 
 
             </div>
-            <button className='search-back' onClick={closeSearch}>
-              close
-            </button>
+           
           </div>
 
         }
