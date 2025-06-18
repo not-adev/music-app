@@ -133,7 +133,7 @@ function App() {
         </div>
 
         <div className="search-home">
-          <a href="#">
+          <a href="#" className='home-class'>
             <button className="home-button">
               <img src="images/home.svg" alt="home" className="invert" />
             </button>
