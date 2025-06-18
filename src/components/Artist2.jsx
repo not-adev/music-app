@@ -55,7 +55,7 @@ const Artist2 = ({click_function}) => {
                 </div>
           
 
-                <div class="song-container" >onClick={()=>click_function("Apna bana le")}
+                <div class="song-container" onClick={()=>click_function("Apna bana le")}>
                     <div class="song-infoo">5.</div>
                     <img src="song-images/apna bana le.jpeg" alt="img" class="song-img"/>
                     <div class="song-infoo">
