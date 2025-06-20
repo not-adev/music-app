@@ -1,6 +1,6 @@
 {
-  "name": "spotify",
-  "homepage": "https://not-adev.github.io/spomtify/ ",
+  "name": "music-app",
+  "homepage": "https://not-adev.github.io/music-app/ ",
   "private": true,
   "version": "0.0.0",
   "type": "module",
