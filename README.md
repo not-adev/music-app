@@ -2,7 +2,7 @@
 
 Music-app is a sleek, responsive music streaming app built with React.js and Tailwind CSS. It features real-time search, playback controls, and a modern UI for discovering and enjoying your favorite tracks.
 
-![MusicWave Preview](./assets/musicapp.png)
+![MusicWave Preview](.src/assets/musicapp.png)
 
 ## 🚀 Features
 
