@@ -10,10 +10,10 @@ import Left from '../components/Left'
 import Trendings from '../components/Trendings'
 import RecentSongs from '../components/RecentSongs'
 import { useState } from 'react'
-
+import Player from '../components/Player';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const noop = () => {}
+  const noop = () => { }
 
   return (
     <Router>
@@ -30,16 +30,17 @@ function App() {
 
       <section className='main-section'>
         {sidebarOpen && (
-          <div 
-            className='sidebar-overlay' 
+          <div
+            className='sidebar-overlay'
             onClick={() => setSidebarOpen(false)}
           ></div>
         )}
         <div className={`left ${sidebarOpen ? 'sidebar-open' : ''}`}>
           <Left />
         </div>
+        <Player />
         <div className='right'>
-          
+
           <Routes>
             <Route path='/' element={<Right click_function={noop} />} />
             <Route path='/artist1' element={<Artist1 click_function={noop} />} />
