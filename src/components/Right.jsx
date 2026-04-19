@@ -40,7 +40,7 @@ const Right = ({click_function}) => {
 
 
                 </section>
-                <h2 className="heading-polular-artist">Foooter </h2>
+                {/* <h2 className="heading-polular-artist">Foooter </h2> */}
 
                 <section>
                     <Footer />
