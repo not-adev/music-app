@@ -11,19 +11,13 @@ export const useSong = () => {
 }
 
 export const SongProvider = ({ children }) => {
-  const [songUrl, setSongUrl] = useState('')
-  const [streamUrl, setStreamUrl] = useState('')
+  const [currentSong, setCurrentSong] = useState({streamUrl : '' , title : '' , thumbnailUrl : '' ,channelTitle : '' })
 
-  const updateSongUrl = (url) => {
-    setSongUrl(url)
+  const updateStreamUrl = (songData) => {
+    setCurrentSong(songData)
   }
-
-  const updateStreamUrl = (url) => {
-    setStreamUrl(url)
-  }
-
   return (
-    <SongContext.Provider value={{ songUrl, streamUrl, updateSongUrl, updateStreamUrl }}>
+    <SongContext.Provider value={{ currentSong,updateStreamUrl }}>
       {children}
     </SongContext.Provider>
   )

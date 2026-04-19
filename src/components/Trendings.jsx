@@ -3,17 +3,30 @@ import axios from 'axios'
 import { useSong } from '../context/SongContext'
 
 const Trendings = () => {
-  const { updateStreamUrl } = useSong()
+  const { updateStreamUrl ,currentSong} = useSong()
   const [trendings, setTrendings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const handlePlayClick = async (videoId) => {
+
+
+
+  const { streamUrl } = useSong();
+
+  useEffect(() => {
+    console.log("Stream URL updated:", currentSong);
+  }, [currentSong]);
+
+  const handlePlayClick = async (videoId, title, thumbnailUrl, channelTitle) => {
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL
-      const response = await axios.get(`${backendUrl}/api/stream/${videoId}`)
-      const streamUrl = response.data.streamUrl || response.data.url
-      updateStreamUrl(streamUrl)
+      const response = await axios.get(`${backendUrl}/stream/${videoId}`)
+      const streamUrl = response.data.data
+      const newObject = { streamUrl: streamUrl, title: title, thumbnailUrl: thumbnailUrl, channelTitle: channelTitle }
+      console.log(newObject)
+      updateStreamUrl(newObject)
+
+
     } catch (err) {
       console.error('Failed to get stream URL:', err)
     }
@@ -21,7 +34,7 @@ const Trendings = () => {
 
 
 
-  
+
 
   useEffect(() => {
     const loadTrendings = async () => {
@@ -82,14 +95,24 @@ const Trendings = () => {
             const watchUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '#'
 
             return (
-              <div key={videoId || index} className="trending-card">
-                <img src={thumbnailUrl} alt={title} className="trending-card-image" />
+              <div key={videoId} className="trending-card">
+                <div className="trending-card-image-wrapper">
+                  <img src={thumbnailUrl} alt={title} className="trending-card-image" />
+
+                  {/* Overlay */}
+                  <div className="trending-overlay">
+                    <button
+                      onClick={() => handlePlayClick(videoId, title, thumbnailUrl, channelTitle)}
+                      className="play-button"
+                    >
+                      ▶
+                    </button>
+                  </div>
+                </div>
+
                 <div className="trending-card-body">
                   <div className="trending-card-title">{title}</div>
                   <div className="trending-card-subtitle">{channelTitle}</div>
-                  <a href="#" onClick={(e) => { e.preventDefault(); handlePlayClick(videoId) }} className="trending-card-link">
-                    Play
-                  </a>
                 </div>
               </div>
             )
