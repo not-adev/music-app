@@ -1,10 +1,27 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useSong } from '../context/SongContext'
 
 const Trendings = () => {
+  const { updateStreamUrl } = useSong()
   const [trendings, setTrendings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const LOCAL_STORAGE_KEY = 'trendingsSongs'
+
+  const handlePlayClick = async (videoId) => {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL
+      const response = await axios.get(`${backendUrl}/api/stream/${videoId}`)
+      const streamUrl = response.data.streamUrl || response.data.url
+      updateStreamUrl(streamUrl)
+    } catch (err) {
+      console.error('Failed to get stream URL:', err)
+    }
+  }
+
+
+
+  
 
   useEffect(() => {
     const loadTrendings = async () => {
@@ -12,27 +29,26 @@ const Trendings = () => {
       setError(null)
 
       try {
-        const cached = localStorage.getItem(LOCAL_STORAGE_KEY)
-        if (cached) {
-          const parsed = JSON.parse(cached)
-          if (Array.isArray(parsed)) {
-            setTrendings(parsed)
-            setLoading(false)
-            return
-          }
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
+        const response = await axios.get(`${backendUrl}/search/trending`)
+        const data = response.data
+
+        if (!data) {
+          throw new Error('Invalid response from server')
         }
 
-        const response = await fetch('https://rss.applemarketingtools.com/api/v2/us/music/most-played/20/songs.json')
-        if (!response.ok) {
-          throw new Error('Failed to load trending songs')
+        const results = Array.isArray(data)
+          ? data
+          : data.data || data.results || []
+
+        if (!Array.isArray(results) || results.length === 0) {
+          throw new Error('No trending songs found')
         }
 
-        const data = await response.json()
-        const results = data.feed?.results || []
         setTrendings(results)
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(results))
       } catch (err) {
         setError(err.message)
+        setTrendings([])
       } finally {
         setLoading(false)
       }
@@ -54,18 +70,30 @@ const Trendings = () => {
 
       {!loading && !error && (
         <div className="trending-grid">
-          {trendings.map((song) => (
-            <div key={song.id} className="trending-card">
-              <img src={song.artworkUrl100} alt={song.name} className="trending-card-image" />
-              <div className="trending-card-body">
-                <div className="trending-card-title">{song.name}</div>
-                <div className="trending-card-subtitle">{song.artistName}</div>
-                <a href={song.url} target="_blank" rel="noreferrer" className="trending-card-link">
-                  More
-                </a>
+          {trendings.map((song, index) => {
+            const videoId = song?.id?.videoId || song?.id
+            const thumbnailUrl =
+              song?.snippet?.thumbnails?.high?.url ||
+              song?.snippet?.thumbnails?.medium?.url ||
+              song?.snippet?.thumbnails?.default?.url ||
+              ''
+            const title = song?.snippet?.title || 'Untitled'
+            const channelTitle = song?.snippet?.channelTitle || 'Unknown channel'
+            const watchUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '#'
+
+            return (
+              <div key={videoId || index} className="trending-card">
+                <img src={thumbnailUrl} alt={title} className="trending-card-image" />
+                <div className="trending-card-body">
+                  <div className="trending-card-title">{title}</div>
+                  <div className="trending-card-subtitle">{channelTitle}</div>
+                  <a href="#" onClick={(e) => { e.preventDefault(); handlePlayClick(videoId) }} className="trending-card-link">
+                    Play
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

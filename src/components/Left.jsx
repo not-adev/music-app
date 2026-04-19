@@ -80,32 +80,7 @@ const Left = () => {
             </NavLink>
           </nav>
 
-          <div className="play-container">
-            <div className="playlist">
-              <div className="inside-playlist">
-                <span style={{ fontWeight: 700, fontSize: "23px" }}>
-                  Add song from your computer
-                </span>
-                <span style={{ fontWeight: 400 }}>It's easy, just click below</span>
-              </div>
-              <div>
-                <button className="playlist-button">
-                 currently not working sorry!
-                </button>
-              </div>
-            </div>
-
-            <div className="playlist">
-              <div className="inside-playlist">
-                <span style={{ fontWeight: 700 }}>Some song from the Developer</span>
-                <span style={{ fontWeight: 700 }}>Suggested</span>
-              </div>
-              <div>
-                Your name <br />
-                Suzume
-              </div>
-            </div>
-          </div>
+        
    </>
   )
 }

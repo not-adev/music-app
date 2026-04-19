@@ -1,19 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import YouTube from 'react-youtube'
-import { useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import { useSong } from '../context/SongContext'
 
 const Player = ({ songsList }) => {
-  let myinterval;
-  const one = useRef(null)
-  const [current, setcurrent] = useState(songsList[songsList.length - 1])
+  const { streamUrl } = useSong()
+  const audioRef = useRef(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+
   useEffect(() => {
-    setcurrent(songsList[songsList.length - 1])
-  }, [songsList])
+    if (streamUrl && audioRef.current) {
+      audioRef.current.src = streamUrl
+      audioRef.current.load()
+    }
+  }, [streamUrl])
 
-  const player = useRef(null)
-  const [slider_value, setSlider_value] = useState(0)
-  const [play_puase_image, setPlay_puase_image] = useState("images/play.svg")
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause()
+      } else {
+        audioRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
 
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime)
+    }
+  }
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration)
+    }
+  }
+
+  const handleSeek = (e) => {
+    const seekTime = (e.target.value / 100) * duration
+    if (audioRef.current) {
+      audioRef.current.currentTime = seekTime
+      setCurrentTime(seekTime)
+    }
+  }
+a
   const option = {
     height: "90",
     width: "90",
@@ -112,43 +144,36 @@ const Player = ({ songsList }) => {
 
   return (
     <>
-      <div className="song-frame  ">
-        <div className='youtube-video '>
-          <YouTube videoId={current.videoId} opts={option} onStateChange={onStateChange} onReady={onPlayerReady} />
-        </div>
+      <div className="song-frame">
+        <audio
+          ref={audioRef}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={() => setIsPlaying(false)}
+        />
         <div className="main_">
-           <img src={current.thumbnail} alt="img" className='current-song-img' />
-          <marquee className="marquee" scrollamount="5" direction="left">{current.title}</marquee>
-    <div>
-
-   
+          <div className="current-song-info">
+            <div className="song-title">Now Playing</div>
+            <div className="song-time">
+              {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')} / 
+              {Math.floor(duration / 60)}:{Math.floor(duration % 60).toString().padStart(2, '0')}
+            </div>
+          </div>
           <div>
             <input
               type="range"
               min="0"
-              max="60"
+              max="100"
               className="slide-bar"
-              onChange={handleSlider}
-              value={slider_value}
+              onChange={handleSeek}
+              value={duration ? (currentTime / duration) * 100 : 0}
             />
-           
           </div>
-          
-
           <div className="buttoons">
-            <button className="back btn" onClick={prev} >
-              <img src="images/left-button.jpg" alt="img" />
-            </button>
-            <button className="mid btn" onClick={play_or_pause} >
-              <img src={play_puase_image} alt="play" id="play" />
-            </button>
-            <button className="front btn" onClick={Next}>
-              <img src="images/right-button.webp" alt="" />
+            <button className="mid btn" onClick={togglePlayPause}>
+              <img src={isPlaying ? "images/stop.jpg" : "images/play.svg"} alt="play" id="play" />
             </button>
           </div>
-          </div>
-
-
         </div>
       </div>
     </>

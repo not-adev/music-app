@@ -7,7 +7,6 @@
 body{
     background-color: black;
     color:white;
-    overflow-y: hidden;
     font-family:  Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
    
 }
@@ -46,7 +45,6 @@ body{
 }
 @media only screen and (max-width: 500px) {
   .home-class{
-   display: none;
 
   }
 }
@@ -293,7 +291,6 @@ body{
     height: 88vh; 
     width: 100vw;
     overflow: auto;
-    overflow-x: hidden;
 }
 .right::-webkit-scrollbar{
     width: 0px;
@@ -307,7 +304,7 @@ body{
     
 }
 .display {
-    display:none;
+
 }
 
 a{
@@ -482,12 +479,10 @@ input:focus {
 .youtube-video{
     height:  200px;
     width: 150px;
-    display: none;
 }
 
 /* Mobile Menu Button */
 .mobile-menu-btn {
-    display: none;
     flex-direction: column;
     justify-content: space-around;
     width: 30px;
@@ -509,7 +504,7 @@ input:focus {
 }
 
 .sidebar-overlay {
-    display: none;
+
 }
 
 @media only screen and (max-width: 990px) {

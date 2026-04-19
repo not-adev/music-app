@@ -39,10 +39,9 @@ function App() {
           <Left />
         </div>
         <div className='right'>
+          
           <Routes>
             <Route path='/' element={<Right click_function={noop} />} />
-            <Route path='/trendings' element={<Trendings />} />
-            <Route path='/recent-songs' element={<RecentSongs />} />
             <Route path='/artist1' element={<Artist1 click_function={noop} />} />
             <Route path='/artist2' element={<Artist2 click_function={noop} />} />
             <Route path='/artist3' element={<Artist3 click_function={noop} />} />
