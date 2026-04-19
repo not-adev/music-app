@@ -1,26 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useState } from 'react'
 
-const SearchSong = ({ getVideo, songsInfo, loading, visible, setVisible, addSongToList }) => {
-  const searchInput = useRef(null)
-
-  const handleEnter = (e) => {
-    if (e.key === 'Enter' && searchInput.current) {
-      getVideo(searchInput.current.value)
-    }
-  }
-
-  const handleSearchClick = () => {
-    if (searchInput.current) {
-      getVideo(searchInput.current.value)
-    }
-  }
-
-  const closeSearch = () => {
-    setVisible(false)
-    if (searchInput.current) {
-      searchInput.current.value = ''
-    }
-  }
+const SearchSong = () => {
+  const [query, setQuery] = useState('')
 
   return (
     <div className="search-page">
@@ -28,42 +9,19 @@ const SearchSong = ({ getVideo, songsInfo, loading, visible, setVisible, addSong
         <h2>Search Songs</h2>
         <div className="search-field">
           <input
-            ref={searchInput}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             type="text"
-            placeholder="Type a song name and press Enter"
-            onKeyDown={handleEnter}
+            placeholder="Type a song name"
           />
-          <button className="search-button" onClick={handleSearchClick}>
+          <button className="search-button" type="button">
             Search
           </button>
         </div>
       </div>
-
-      {loading && (
-        <div className="loading-spinner">
-          <div className="spinner" />
-        </div>
-      )}
-
-      {visible && (
-        <div className="song-main">
-          <div className="song-list">
-            <button className="search-back" onClick={closeSearch}>
-              Close
-            </button>
-            {songsInfo.map((item) => (
-              <button
-                className="mineBtn"
-                key={item.etag}
-                onClick={() => addSongToList(item)}
-              >
-                <img src={item.snippet.thumbnails.high.url} alt="img" className="song-img" />
-                <div className="song-info">{item.snippet.title}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="search-help">
+        <p>Use this page to search for songs when the feature is ready.</p>
+      </div>
     </div>
   )
 }

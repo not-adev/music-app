@@ -2,7 +2,8 @@ import React from 'react'
 import ArtistCard from './ArtistCard'
 import Album from './Album'
 import Footer from './Footer'
-
+import Trendings from './Trendings'
+import RecentSongs from './RecentSongs'
 const Right = ({click_function}) => {
     return (
         <>
@@ -18,6 +19,12 @@ const Right = ({click_function}) => {
                 </section><br />
 
                 <br />
+                 <h2 className="heading-polular-artist">Trendngs </h2>
+                <Trendings />
+
+
+                  <h2 className="heading-polular-artist">Recent songs </h2>
+                <RecentSongs  />
                 <h2 className="heading-polular-artist">Album </h2>
 
                 <section className="anime">
