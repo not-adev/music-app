@@ -1,15 +1,24 @@
-import { defaultAllowedOrigins } from "vite"
+import axios from "axios";
 
- export default playSong = async ({videoId, title, thumbnailUrl, channelTitle}) => {
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL
-      const response = await axios.get(`${backendUrl}/stream/${videoId}`)
-      const streamUrl = response.data.data
-      const newObject = { streamUrl: streamUrl, title: title, thumbnailUrl: thumbnailUrl, channelTitle: channelTitle }
-      updateStreamUrl(newObject)
+const playSong = async ({ videoId, title, thumbnailUrl, channelTitle },updateStreamUrl) => {
+  try {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
+    const response = await axios.get(`${backendUrl}/stream/${videoId}`);
 
-    } catch (err) {
-      console.error('Failed to get stream URL:', err)
-    }
+    const streamUrl = response.data.data;
+
+    const newObject = {
+      streamUrl,
+      title,
+      thumbnailUrl,
+      channelTitle,
+    };
+
+    updateStreamUrl(newObject);
+  } catch (err) {
+    console.error("Failed to get stream URL:", err);
   }
+};
+
+export default playSong;

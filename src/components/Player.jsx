@@ -45,7 +45,6 @@ const MiniPlayer = () => {
     audioRef.current.currentTime = newTime
     setCurrentTime(newTime)
   }
-  console.log(currentSong)
   if (currentSong.title == '') return null;
 
   return (
