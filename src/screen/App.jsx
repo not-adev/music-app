@@ -10,39 +10,44 @@ import Left from '../components/Left'
 import Trendings from '../components/Trendings'
 import RecentSongs from '../components/RecentSongs'
 import { useState } from 'react'
-import Player from '../components/Player';
+import MiniPlayer from '../components/Player';
+import SerchSong from '../pages/SearchSongs';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const noop = () => { }
 
   return (
     <Router>
-      <section className='nav-bar'>
+      <section className='flex items-center justify-around  inset-0'>
         <button className='mobile-menu-btn' onClick={() => setSidebarOpen(!sidebarOpen)}>
           <span></span>
           <span></span>
           <span></span>
         </button>
         <div className=''>
-          <img src='namelogo.png' alt='logo' className='mylogo' />
+          <img src='/logo/logo.gif' alt='logo' className='h-10 invert-100' />
         </div>
       </section>
 
-      <section className='main-section'>
+      <section className='main-section relative'>
         {sidebarOpen && (
           <div
             className='sidebar-overlay'
             onClick={() => setSidebarOpen(false)}
           ></div>
         )}
+        <div className="fixed bottom-3 z-30  flex justify-center left-0 right-0  pb-40" >
+          <MiniPlayer />
+
+        </div>
         <div className={`left ${sidebarOpen ? 'sidebar-open' : ''}`}>
           <Left />
         </div>
-        <Player />
         <div className='right'>
 
           <Routes>
             <Route path='/' element={<Right click_function={noop} />} />
+            <Route path='/search-song' element={<SerchSong/>} />
             <Route path='/artist1' element={<Artist1 click_function={noop} />} />
             <Route path='/artist2' element={<Artist2 click_function={noop} />} />
             <Route path='/artist3' element={<Artist3 click_function={noop} />} />

@@ -3,22 +3,18 @@ import axios from 'axios'
 import { useSong } from '../context/SongContext'
 
 const Trendings = () => {
-  const { updateStreamUrl ,currentSong} = useSong()
+  const { updateStreamUrl, currentSong } = useSong()
   const [trendings, setTrendings] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-
-
+  const [loadingSongId, setLoadingSongId] = useState('')
 
   const { streamUrl } = useSong();
 
-  useEffect(() => {
-    console.log("Stream URL updated:", currentSong);
-  }, [currentSong]);
 
   const handlePlayClick = async (videoId, title, thumbnailUrl, channelTitle) => {
     try {
+      setLoadingSongId(videoId)
       const backendUrl = import.meta.env.VITE_BACKEND_URL
       const response = await axios.get(`${backendUrl}/stream/${videoId}`)
       const streamUrl = response.data.data
@@ -30,6 +26,9 @@ const Trendings = () => {
     } catch (err) {
       console.error('Failed to get stream URL:', err)
     }
+    finally{
+      setLoadingSongId('')
+    }
   }
 
 
@@ -38,10 +37,16 @@ const Trendings = () => {
 
   useEffect(() => {
     const loadTrendings = async () => {
-      setLoading(true)
-      setError(null)
-
+      setLoading(true);
+      setError(null);
       try {
+        const cached = sessionStorage.getItem("trendings");
+  
+        if (cached) {
+          let data = await JSON.parse(cached)
+          setTrendings(data);
+          return;
+        }
         const backendUrl = import.meta.env.VITE_BACKEND_URL
         const response = await axios.get(`${backendUrl}/search/trending`)
         const data = response.data
@@ -52,11 +57,13 @@ const Trendings = () => {
 
         const results = Array.isArray(data)
           ? data
-          : data.data || data.results || []
+          : data.data || data.results
 
-        if (!Array.isArray(results) || results.length === 0) {
+        if (!Array.isArray(results) || results.length < 1) {
           throw new Error('No trending songs found')
         }
+
+        sessionStorage.setItem("trendings", JSON.stringify(results));
 
         setTrendings(results)
       } catch (err) {
@@ -77,9 +84,7 @@ const Trendings = () => {
         <div className="trending-loading">Loading trendings...</div>
       )}
 
-      {error && (
-        <div className="trending-error">{error}</div>
-      )}
+     {error && <div className="recent-error">{error}</div>}
 
       {!loading && !error && (
         <div className="trending-grid">
@@ -105,8 +110,12 @@ const Trendings = () => {
                       onClick={() => handlePlayClick(videoId, title, thumbnailUrl, channelTitle)}
                       className="play-button"
                     >
-                      ▶
+                   {loadingSongId === videoId ? 
+                   <img src='/buffer.gif' className='w-full h-full bg-cover'>  
+                   </img>
+                    : "▶"}
                     </button>
+
                   </div>
                 </div>
 

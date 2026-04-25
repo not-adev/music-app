@@ -17,13 +17,14 @@ body {
     padding: 10px 5px;
     justify-content: space-around;
     align-items: center;
+    
 }
 
 .invert {
     filter: invert(1);
 }
 
-.flex {
+.flex1 {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -137,7 +138,6 @@ body {
 
 @media only screen and (max-width: 700px) {
     .nav-bar {
-
         margin: auto;
         width: 70%;
 
