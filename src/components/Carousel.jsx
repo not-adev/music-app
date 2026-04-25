@@ -83,7 +83,7 @@ export default function AutoCarousel() {
   }, []);
 
   return (
-    <div onClick={()=>navigate('/search-song')} className="w-full !p-7 overflow-hidden rounded-3xl bg-zinc-900 shadow-xl !p-2 md:!p-0">
+    <div onClick={()=>navigate('/search-song')} className="w-full overflow-hidden rounded-3xl bg-zinc-900 shadow-xl !p-2 md:!p-0">
       <div
         className="flex transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${active * 100}%)` }}
