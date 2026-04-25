@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-export default function GenreAnadSearchaBar() {
+export default function GenreAnadSearchaBar({onClickPlay}) {
     const url = "/genre";
-
     const [loadingGenre, setLoadingGenre] = useState(null);
 
     const cards = [
@@ -20,20 +19,18 @@ export default function GenreAnadSearchaBar() {
         { title: "Party", image: `${url}/party.jpg` },
     ];
 
+
     const handleGenreClick = async (genre) => {
         try {
             setLoadingGenre(genre);
-
             const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
             const res = await axios.get(
                 `${backendUrl}/search/genre/${genre}`
             );
 
             console.log("Genre Songs:", res.data);
-
-            // 👉 here you can update state or context
-            // setSongs(res.data)
+            onClickPlay(res.data.data)
+           
 
         } catch (err) {
             console.error("Genre fetch failed:", err);
@@ -69,11 +66,11 @@ export default function GenreAnadSearchaBar() {
                             {isLoading ? (
                                 <div className="relative z-10 flex flex-col items-center">
                                     <img
-                                        src="https://i.gifer.com/ZZ5H.gif"
+                                        src="/buffer.gif"
                                         alt="loading"
-                                        className="w-10 h-10"
+                                        className="w-full h-full "
                                     />
-                                    <p className="text-white text-sm mt-2">Loading...</p>
+                                  
                                 </div>
                             ) : (
                                 <div className="relative z-10 text-white text-2xl font-bold">

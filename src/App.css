@@ -394,11 +394,7 @@ h1{
     padding: 24px;
 }
 
-.trending-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-}
+
 
 .trending-card {
     background: rgba(255, 255, 255, 0.04);
@@ -541,4 +537,42 @@ h1{
     padding: 20px;
     color: #b8b6b6;
     font-size: 1rem;
+}
+
+
+.trending-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .trending-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Phone */
+@media (max-width: 640px) {
+  .trending-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .trending-card {
+    transform: scale(0.95);
+  }
+
+  .trending-card-image {
+    height: 140px;
+  }
+
+  .trending-card-title {
+    font-size: 14px;
+  }
+
+  .trending-card-subtitle {
+    font-size: 12px;
+  }
 }

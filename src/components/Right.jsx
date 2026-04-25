@@ -4,27 +4,26 @@ import Album from './Album'
 import Footer from './Footer'
 import Trendings from './Trendings'
 import RecentSongs from './RecentSongs'
+import MyGroup from './MyGroup'
+import Carousel from './Carousel'
 const Right = ({ click_function }) => {
     return (
         <>
-
-            <h2 className="heading-polular-artist">Popular artist </h2>
-            <section className='popular-artist'>
-                <ArtistCard name="pritam" image={"images/artist-1.jpeg"} link={"/artist1"} />
-                <ArtistCard name="" image={"images/artist-2.jpeg"} link={"/artist2"} />
-                <ArtistCard name="Arjit singh" image={"images/artist-3.jpeg"} link={"/artist3"} />
-                <ArtistCard name="AR Rehman" image={"images/artist-4.jpeg"} link={"/artist4"} />
-                <ArtistCard name="Atif Aslam" image={"images/artist-5.jpeg"} link={"/artist5"} />
-
-            </section><br />
+            <div className='!p-6'>
+                <Carousel />
+            </div>
 
             <br />
-            <h2 className="heading-polular-artist">Trendngs </h2>
-            <Trendings />
+            <h2 className="text-3xl font-bold !mb-2">Trendings </h2>
+                <Trendings />
 
 
-            <h2 className="heading-polular-artist">Recent songs </h2>
-                <RecentSongs  />
+            <h2 className="text-3xl font-bold !mb-2">Recent songs </h2>
+                <RecentSongs />
+
+            <h2 className="text-3xl font-bold !mb-2">My Groups</h2>
+                <MyGroup />
+
             <h2 className="heading-polular-artist">Album </h2>
 
             <section className="anime">
@@ -47,8 +46,6 @@ const Right = ({ click_function }) => {
 
 
             </section>
-            {/* <h2 className="heading-polular-artist">Foooter </h2> */}
-
             <section>
                 <Footer />
             </section>

@@ -12,6 +12,7 @@ import RecentSongs from '../components/RecentSongs'
 import { useState } from 'react'
 import MiniPlayer from '../components/Player';
 import SerchSong from '../pages/SearchSongs';
+import SearchGroupPage from '../pages/SearchGroup';
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const noop = () => { }
@@ -48,6 +49,8 @@ function App() {
           <Routes>
             <Route path='/' element={<Right click_function={noop} />} />
             <Route path='/search-song' element={<SerchSong/>} />
+            <Route path='/search-group' element={<SearchGroupPage/>} />
+
             <Route path='/artist1' element={<Artist1 click_function={noop} />} />
             <Route path='/artist2' element={<Artist2 click_function={noop} />} />
             <Route path='/artist3' element={<Artist3 click_function={noop} />} />
