@@ -1,5 +1,5 @@
 import Right from '../components/Right'
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import '../App.css'
 import Artist1 from '../components/Artist1'
 import Artist2 from '../components/Artist2'
@@ -13,7 +13,12 @@ import { useState } from 'react'
 import MiniPlayer from '../components/Player';
 import SerchSong from '../pages/SearchSongs';
 import SearchGroupPage from '../pages/SearchGroup';
+import ProtectedRoute from '../components/ProtectedRoute';
+import SignInAndLoginPage from '../pages/SignInAndLoginPage';
+import { AuthenticateWithRedirectCallback } from '@clerk/react';
+import UserNavbarButton from '../components/UserNavbarButton';
 function App() {
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const noop = () => { }
 
@@ -28,6 +33,9 @@ function App() {
         <div className=''>
           <img src='/logo/logo.gif' alt='logo' className='h-10 invert-100' />
         </div>
+
+        <UserNavbarButton />
+
       </section>
 
       <section className='main-section relative'>
@@ -45,13 +53,26 @@ function App() {
           <Left />
         </div>
         <div className='right'>
-
           <Routes>
+            <Route path='/login' element={<SignInAndLoginPage />} />
+            <Route
+              path="/sso-callback"
+              element={<AuthenticateWithRedirectCallback />}
+            />
             <Route path='/' element={<Right click_function={noop} />} />
-            <Route path='/search-song' element={<SerchSong/>} />
-            <Route path='/search-group' element={<SearchGroupPage/>} />
+            <Route path='/search-song' element={
+              <ProtectedRoute>
+                <SerchSong />
+              </ProtectedRoute>
+            } />
+            <Route path='/search-group' element={<SearchGroupPage />} />
 
-            <Route path='/artist1' element={<Artist1 click_function={noop} />} />
+            <Route path='/artist1' element={
+              <ProtectedRoute>
+
+                <Artist1 click_function={noop} />
+              </ProtectedRoute>
+            } />
             <Route path='/artist2' element={<Artist2 click_function={noop} />} />
             <Route path='/artist3' element={<Artist3 click_function={noop} />} />
             <Route path='/artist4' element={<Artist4 click_function={noop} />} />
