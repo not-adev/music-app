@@ -17,13 +17,17 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import SignInAndLoginPage from '../pages/SignInAndLoginPage';
 import { AuthenticateWithRedirectCallback } from '@clerk/react';
 import UserNavbarButton from '../components/UserNavbarButton';
+import AuthSync from '../components/AuthSync.jsx'
+import { useSocketAuth } from '../useSocketAuth';
+import CreateGroupPage from '../pages/CreateGroupPage.jsx';
 function App() {
-
+  useSocketAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const noop = () => { }
 
   return (
     <Router>
+      <AuthSync />
       <section className='flex items-center justify-around  inset-0'>
         <button className='mobile-menu-btn' onClick={() => setSidebarOpen(!sidebarOpen)}>
           <span></span>
@@ -66,6 +70,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path='/search-group' element={<SearchGroupPage />} />
+             <Route path='/create-group' element={<CreateGroupPage />} />
 
             <Route path='/artist1' element={
               <ProtectedRoute>

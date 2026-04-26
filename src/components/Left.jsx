@@ -1,6 +1,5 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-
 const Left = () => {
   return (
    <>
@@ -77,6 +76,22 @@ const Left = () => {
               })}
             >
               My Groups
+            </NavLink>
+
+             <NavLink
+              to="/create-group"
+              end
+              style={({ isActive }) => ({
+                display: 'block',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                background: isActive ? '#fff' : 'rgba(255,255,255,0.08)',
+                color: isActive ? '#000' : '#fff',
+                fontWeight: 700,
+              })}
+            >
+              Create Group
             </NavLink>
           </nav>
 
