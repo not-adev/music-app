@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import playSong from "../utilities/playSong";
 import { useSong } from "../context/SongContext";
+import getStreamUrl from "../utilities/getStreamUrl";
 const RenderSearchSongs = ({ songs = [] }) => {
     const [loadingId, setLoadingId] = useState(null);
-    const { updateStreamUrl } = useSong();
+    const [loadingAddButton, setLoadingAddButton] = useState(null)
+    const { updateStreamUrl, addToQueue } = useSong();
     const handlePlay = async (song) => {
         const videoId = song?.id?.videoId || song?.id;
         console.log("hihihihi")
@@ -19,11 +21,43 @@ const RenderSearchSongs = ({ songs = [] }) => {
                     song?.snippet?.thumbnails?.default?.url,
                 channelTitle: song?.snippet?.channelTitle,
             };
-            await playSong(newObject ,updateStreamUrl)
+            await playSong(newObject, updateStreamUrl)
         } catch (err) {
             console.error("Failed to play song:", err);
         } finally {
             setLoadingId(null);
+        }
+    };
+
+    const addingToQueue = async (song) => {
+        const videoId = song?.id?.videoId || song?.id;
+
+        try {
+            setLoadingAddButton(videoId);
+
+            const newObject = {
+                videoId,
+                title: song?.snippet?.title,
+                thumbnailUrl:
+                    song?.snippet?.thumbnails?.high?.url ||
+                    song?.snippet?.thumbnails?.medium?.url ||
+                    song?.snippet?.thumbnails?.default?.url,
+                channelTitle: song?.snippet?.channelTitle,
+            };
+
+            const newSong = await getStreamUrl(newObject);
+
+            const isAdded = addToQueue(newSong);
+
+            if (!isAdded) {
+                alert("Queue can only have max 5 songs");
+                return;
+            }
+
+        } catch (error) {
+            console.error("Failed to add song:", error);
+        } finally {
+            setLoadingAddButton(null);
         }
     };
 
@@ -42,6 +76,7 @@ const RenderSearchSongs = ({ songs = [] }) => {
                 const channelTitle = song?.snippet?.channelTitle || "Unknown channel";
 
                 const isLoading = loadingId === videoId;
+                const bufferAdd = loadingAddButton == videoId
 
                 return (
                     <div
@@ -76,8 +111,8 @@ const RenderSearchSongs = ({ songs = [] }) => {
                                 {isLoading ? "Loading..." : "Play"}
                             </button>
 
-                            <button className="!px-4 !py-2 rounded-xl bg-zinc-700 text-white font-semibold hover:bg-zinc-600">
-                                Add
+                            <button onClick={() => addingToQueue(song)} className="!px-4 !py-2 rounded-xl bg-zinc-700 text-white font-semibold hover:bg-zinc-600">
+                                {bufferAdd ? "Loading..." : "Add"}
                             </button>
                         </div>
                     </div>

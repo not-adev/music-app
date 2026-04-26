@@ -1,95 +1,58 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { useSong } from '../context/SongContext'
+import React from "react";
+import { useSong } from "../context/SongContext";
 
-const RecentSongs = () => {
-  const { updateStreamUrl } = useSong()
-  const [recentSongs, setRecentSongs] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+export default function RecentSongs() {
+  const { history, updateStreamUrl } = useSong();
 
-  const handlePlayClick = async (videoId) => {
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL
-      const response = await axios.get(`${backendUrl}/api/stream/${videoId}`)
-      const streamUrl = response.data.streamUrl || response.data.url
-      updateStreamUrl(streamUrl)
-    } catch (err) {
-      console.error('Failed to get stream URL:', err)
-    }
+  if (!history || history.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-zinc-400">
+        No recent songs yet 🎵
+      </div>
+    );
   }
 
-  useEffect(() => {
-    const loadRecentSongs = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const backendUrl = import.meta.env.VITE_BACKEND_URL
-        const response = await axios.get(`${backendUrl}/search/recent-songs`)
-        const data = response.data
-
-        if (!data) {
-          throw new Error('Invalid response from server')
-        }
-
-        const results = Array.isArray(data)
-          ? data
-          : data.data || data.results || []
-
-        if (!Array.isArray(results) || results.length === 0) {
-          throw new Error('No recent songs found')
-        }
-
-        setRecentSongs(results)
-      } catch (err) {
-        setError(err.message)
-        setRecentSongs([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadRecentSongs()
-  }, [])
-
   return (
-    <div className="recent-page">
-    
+    <div className=" bg-zinc-950 !p-9">
+     
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {history.map((song, index) => (
+          <div
+            key={index}
+            className="group bg-zinc-900 rounded-2xl overflow-hidden shadow-lg hover:bg-zinc-800 transition"
+          >
+            {/* IMAGE */}
+            <div className="relative">
+              <img
+                src={song.thumbnailUrl}
+                alt={song.title}
+                className="w-full h-40 object-cover"
+              />
 
-      {loading && <div className="recent-loading">Loading recent songs...</div>}
-      {error && <div className="recent-error">{error}</div>}
-
-      {!loading && !error && (
-        <div className="recent-grid">
-          {recentSongs.map((song, index) => {
-            const videoId = song?.id?.videoId || song?.id
-            const thumbnailUrl =
-              song?.snippet?.thumbnails?.high?.url ||
-              song?.snippet?.thumbnails?.medium?.url ||
-              song?.snippet?.thumbnails?.default?.url ||
-              ''
-            const title = song?.snippet?.title || 'Untitled'
-            const channelTitle = song?.snippet?.channelTitle || 'Unknown channel'
-            const watchUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '#'
-
-            return (
-              <div key={videoId || index} className="recent-card">
-                <img src={thumbnailUrl} alt={title} className="recent-card-image" />
-                <div className="recent-card-body">
-                  <div className="recent-card-title">{title}</div>
-                  <div className="recent-card-subtitle">{channelTitle}</div>
-                  <a href="#" onClick={(e) => { e.preventDefault(); handlePlayClick(videoId) }} className="recent-card-link">
-                    Play
-                  </a>
+              {/* overlay play button */}
+              <button
+                onClick={() => updateStreamUrl(song)}
+                className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition"
+              >
+                <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white  text-xl font-bold">
+                  ▶
                 </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </div>
-  )
-}
+              </button>
+            </div>
 
-export default RecentSongs
+            {/* CONTENT */}
+            <div className="p-4 space-y-1">
+              <div className="text-white font-semibold truncate">
+                {song.title}
+              </div>
+
+              <div className="text-zinc-400 text-sm truncate">
+                {song.channelTitle}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

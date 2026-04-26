@@ -1,0 +1,26 @@
+import axios from "axios";
+
+const getStreamUrl = async ({ videoId, title, thumbnailUrl, channelTitle }) => {
+  try {
+    console.log(videoId)
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const response = await axios.get(`${backendUrl}/stream/${videoId}`);
+
+    const streamUrl = response.data.data;
+
+    const newObject = {
+      streamUrl,
+      title,
+      thumbnailUrl,
+      channelTitle,
+    };
+    return newObject
+
+   
+  } catch (err) {
+    console.error("Failed to get stream URL:", err);
+  }
+};
+
+export default getStreamUrl;

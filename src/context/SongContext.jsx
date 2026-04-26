@@ -23,14 +23,25 @@ export const SongProvider = ({ children }) => {
 
   }
   const addToQueue = (song) => {
-    if(queue.length >= 5){
-      return 
-    }
-    setQueue((prev) => [...prev, song]);
+    if (!song) return false ;
+    setQueue((prev) => {
+      const exists = prev.some((s) => s.videoId === song.videoId);
+      if (exists) return prev;
+
+      const updated = [...prev, song];
+
+      if (updated.length > 5) {
+        updated.shift(); // remove oldest
+      }
+
+      return updated;
+    });
+
+    return true;
   };
 
   const playNext = () => {
-    if (queue.length === 0) return;
+    if (queue.length === 0) return false;
 
     const nextSong = queue[0];
     if (currentSong) {
@@ -39,11 +50,27 @@ export const SongProvider = ({ children }) => {
 
     setCurrentSong(nextSong);
     setQueue((prev) => prev.slice(1));
+    return true
+  };
+
+  const playPrev = () => {
+    if (history.length === 0) return;
+
+    const prevSong = history[0];
+    if (currentSong) {
+      setQueue((prev) => [currentSong, ...prev]);
+    }
+
+    // Set previous song as current
+    setCurrentSong(prevSong);
+
+    // Remove it from history
+    setHistory((prev) => prev.slice(1));
   };
 
 
   return (
-    <SongContext.Provider value={{ currentSong, updateStreamUrl, addToQueue , playNext , history , queue }}>
+    <SongContext.Provider value={{ currentSong, updateStreamUrl, addToQueue, playNext, history, queue, playPrev }}>
       {children}
     </SongContext.Provider>
   )
