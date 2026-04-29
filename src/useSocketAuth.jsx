@@ -12,6 +12,8 @@ export function useSocketAuth() {
       socket.connect();
     };
 
+    
+
     init();
   }, [getToken]);
 }
