@@ -20,8 +20,8 @@ export default function CreateGroupPage() {
         e.preventDefault();
 
         const groupData = {
-            name: groupName,
-            mode,
+            name: groupName.trim(),
+            mode ,
             isPrivate,
         };
 
