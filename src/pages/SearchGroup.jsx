@@ -3,6 +3,7 @@ import axios from "axios";
 import GroupSearch from "../components/GroupSearchFilter";
 import GroupList from "../components/GroupSearchDisplay";
 import { useAuth } from "@clerk/react";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchGroupPage() {
   const [query, setQuery] = useState("");
@@ -10,6 +11,7 @@ export default function SearchGroupPage() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(false);
   const { getToken } = useAuth();
+  const navigate = useNavigate();
 
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -64,6 +66,10 @@ export default function SearchGroupPage() {
   const handleToGroup = async (groupId) => {
     console.log(groupId)
     const token = await getToken();
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const response = await axios.post(
       `${backendUrl}/group/join`,
       { groupId },

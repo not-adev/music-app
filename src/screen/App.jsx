@@ -70,7 +70,11 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path='/search-group' element={<SearchGroupPage />} />
-             <Route path='/create-group' element={<CreateGroupPage />} />
+            <Route path='/create-group' element={
+              <ProtectedRoute>
+                <CreateGroupPage />
+              </ProtectedRoute>
+            } />
 
             <Route path='/artist1' element={
               <ProtectedRoute>
