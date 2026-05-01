@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/react";
 import DisplayMyGroups from "../components/DisplayMyGroups";
-
+import { socket } from "../socket";
 export default function MyOwnedGroups() {
     const { getToken } = useAuth();
 
@@ -15,6 +15,7 @@ export default function MyOwnedGroups() {
 
     const fetchOwnedGroups = async () => {
         try {
+
             const token = await getToken();
             const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -26,6 +27,7 @@ export default function MyOwnedGroups() {
                     },
                 }
             );
+            console.log(res.data)
 
             setGroups(res.data.data);
         } catch (err) {
@@ -54,29 +56,44 @@ export default function MyOwnedGroups() {
         }
     };
 
-    const toggleLive = async (groupId) => {
-        try {
-            const token = await getToken();
-
-            const res = await axios.patch(
-                `${import.meta.env.VITE_BACKEND_URL}/groupCrud/toggleLive/${groupId}`,
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+    const toggleLive = async (groupId, status) => {
+        // socket emits for making group live and create a session 
+        if (!status) {
+            socket.emit('room:create', { groupId }, (response) => {
+                if (response.success) {
+                    setGroups((prev) =>
+                        prev.map((g) =>
+                            g._id === groupId
+                                ? { ...g, live: true }
+                                : g
+                        )
+                    );
                 }
-            );
+                else {
+                    console.log(response.message)
+                    alert('cant make group alive try again later ')
+                }
+            }
 
-            setGroups((prev) =>
-                prev.map((g) =>
-                    g._id === groupId
-                        ? { ...g, live: res.data.data.live }
-                        : g
-                )
-            );
-        } catch (err) {
-            console.error(err);
+            )
+
+        }
+        else if (status) {
+            const pakka = confirm('do you realy want to end this session ')
+            if (pakka) {
+
+                socket.emit('room:delete', {}, (res) => {
+                    if (res.success) {
+                        setGroups((prev) =>
+                            prev.map((g) =>
+                                g._id === groupId
+                                    ? { ...g, live: false }
+                                    : g
+                            )
+                        );
+                    }
+                })
+            }
         }
     };
 
