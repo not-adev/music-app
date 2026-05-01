@@ -15,7 +15,7 @@ const playSong = async ({ videoId, title, thumbnailUrl, channelTitle },updateStr
       channelTitle,
     };
 
-    updateStreamUrl(newObject);
+    await updateStreamUrl(newObject);
   } catch (err) {
     console.error("Failed to get stream URL:", err);
   }

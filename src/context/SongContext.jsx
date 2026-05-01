@@ -1,5 +1,6 @@
+import axios from 'axios'
 import React, { createContext, useContext, useState } from 'react'
-
+import { useAuth } from '@clerk/react'
 const SongContext = createContext()
 
 export const useSong = () => {
@@ -14,16 +15,30 @@ export const SongProvider = ({ children }) => {
   const [currentSong, setCurrentSong] = useState({ streamUrl: '', title: '', thumbnailUrl: '', channelTitle: '' })
   const [queue, setQueue] = useState([]);
   const [history, setHistory] = useState([]);
+  const { getToken } = useAuth()
 
-  const updateStreamUrl = (songData) => {
+  const updateStreamUrl = async (songData) => {
+    const token = await getToken();
     if (currentSong.streamUrl) {
       setHistory((prev) => [currentSong, ...prev]);
-    }
-    setCurrentSong(songData)
 
-  }
+    }
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    axios.post(
+      `${backendUrl}/recentSongs`,
+      songData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setCurrentSong(songData);
+  };
+
+
   const addToQueue = (song) => {
-    if (!song) return false ;
+    if (!song) return false;
     setQueue((prev) => {
       const exists = prev.some((s) => s.videoId === song.videoId);
       if (exists) return prev;
@@ -74,4 +89,4 @@ export const SongProvider = ({ children }) => {
       {children}
     </SongContext.Provider>
   )
-}
+} 
