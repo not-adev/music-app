@@ -63,28 +63,32 @@ export default function SearchGroupPage() {
 
   const handleModeSelect = (mode) => setQuery(mode);
 
+
   const handleToGroup = async (groupId) => {
-    console.log(groupId)
-    const token = await getToken();
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-    const response = await axios.post(
-      `${backendUrl}/group/join`,
-      { groupId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      console.log(groupId)
+      const token = await getToken();
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    );
-    if (response.data?.success) {
-      alert('added to group')
+      const response = await axios.post(
+        `${backendUrl}/group/join`,
+        { groupId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
+      );
+      console.log(response.data)
+      alert(response.data.data.message)
+
+    } catch (error) {
+      console.log(error.message)
     }
-    else {
-      alert("send")
-    }
+
   };
 
   return (

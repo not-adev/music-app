@@ -40,7 +40,7 @@ export default function GenreAnadSearchaBar({onClickPlay}) {
     };
 
     return (
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="max-w mx-auto space-y-6">
             <div className="px-2 grid grid-cols-2 md:grid-cols-3 gap-6">
                 {cards.map((card, index) => {
                     const isLoading = loadingGenre === card.title;

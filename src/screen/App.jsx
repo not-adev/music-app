@@ -20,6 +20,7 @@ import UserNavbarButton from '../components/UserNavbarButton';
 import AuthSync from '../components/AuthSync.jsx'
 import { useSocketAuth } from '../useSocketAuth';
 import CreateGroupPage from '../pages/CreateGroupPage.jsx';
+import MyOwnedGroups from '../pages/MyGroupsPage.jsx';
 function App() {
   useSocketAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -76,12 +77,21 @@ function App() {
               </ProtectedRoute>
             } />
 
+
+            <Route path='/my-groups' element={
+              <ProtectedRoute>
+
+               <MyOwnedGroups />
+              </ProtectedRoute>
+            } />
+
             <Route path='/artist1' element={
               <ProtectedRoute>
 
                 <Artist1 click_function={noop} />
               </ProtectedRoute>
             } />
+
             <Route path='/artist2' element={<Artist2 click_function={noop} />} />
             <Route path='/artist3' element={<Artist3 click_function={noop} />} />
             <Route path='/artist4' element={<Artist4 click_function={noop} />} />
