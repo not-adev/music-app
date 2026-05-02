@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { createContext, useContext, useState } from 'react'
 import { useAuth } from '@clerk/react'
+
 const SongContext = createContext()
 
 export const useSong = () => {
@@ -12,81 +13,118 @@ export const useSong = () => {
 }
 
 export const SongProvider = ({ children }) => {
-  const [currentSong, setCurrentSong] = useState({ streamUrl: '', title: '', thumbnailUrl: '', channelTitle: '' })
-  const [queue, setQueue] = useState([]);
-  const [history, setHistory] = useState([]);
+  const emptySong = {
+    streamUrl: '',
+    title: '',
+    thumbnailUrl: '',
+    channelTitle: ''
+  }
+
+  const [currentSong, setCurrentSong] = useState(emptySong)
+  const [queue, setQueue] = useState([])
+  const [history, setHistory] = useState([])
+  const [isInGroup, setIsInGroup] = useState(false)
+
   const { getToken } = useAuth()
 
   const updateStreamUrl = async (songData) => {
-    const token = await getToken();
-    if (currentSong.streamUrl) {
-      setHistory((prev) => [currentSong, ...prev]);
+    if (isInGroup) return
 
+    const token = await getToken()
+
+    if (currentSong.streamUrl) {
+      setHistory(prev => [currentSong, ...prev])
     }
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
+
     axios.post(
       `${backendUrl}/recentSongs`,
       songData,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       }
-    );
-    setCurrentSong(songData);
-  };
+    )
 
+    setCurrentSong(songData)
+  }
 
   const addToQueue = (song) => {
-    if (!song) return false;
-    setQueue((prev) => {
-      const exists = prev.some((s) => s.videoId === song.videoId);
-      if (exists) return prev;
+    if (isInGroup || !song) return false
 
-      const updated = [...prev, song];
+    setQueue(prev => {
+      const exists = prev.some(s => s.videoId === song.videoId)
+      if (exists) return prev
 
-      if (updated.length > 5) {
-        updated.shift(); // remove oldest
-      }
+      const updated = [...prev, song]
 
-      return updated;
-    });
+      if (updated.length > 5) updated.shift()
 
-    return true;
-  };
+      return updated
+    })
+
+    return true
+  }
 
   const playNext = () => {
-    if (queue.length === 0) return false;
+    if (queue.length === 0) return false
 
-    const nextSong = queue[0];
-    if (currentSong) {
-      setHistory((prev) => [currentSong, ...prev]);
+    const nextSong = queue[0]
+
+    if (currentSong.streamUrl) {
+      setHistory(prev => [currentSong, ...prev])
     }
 
-    setCurrentSong(nextSong);
-    setQueue((prev) => prev.slice(1));
+    setCurrentSong(nextSong)
+    setQueue(prev => prev.slice(1))
+
     return true
-  };
+  }
 
   const playPrev = () => {
-    if (history.length === 0) return;
+    if (isInGroup) return
 
-    const prevSong = history[0];
-    if (currentSong) {
-      setQueue((prev) => [currentSong, ...prev]);
+    if (history.length === 0) return
+
+    const prevSong = history[0]
+
+    if (currentSong.streamUrl) {
+      setQueue(prev => [currentSong, ...prev])
     }
 
-    // Set previous song as current
-    setCurrentSong(prevSong);
+    setCurrentSong(prevSong)
+    setHistory(prev => prev.slice(1))
+  }
 
-    // Remove it from history
-    setHistory((prev) => prev.slice(1));
-  };
+  const reset = (status) => {
+    setIsInGroup(status)
+    setCurrentSong(emptySong)
+    setQueue([])
+    setHistory([])
+  }
 
+  const inGroupUpdate = (songData) => {
+    setCurrentSong(songData)
+  }
 
   return (
-    <SongContext.Provider value={{ currentSong, updateStreamUrl, addToQueue, playNext, history, queue, playPrev }}>
+    <SongContext.Provider
+      value={{
+        currentSong,
+        queue,
+        history,
+        isInGroup,
+        updateStreamUrl,
+        addToQueue,
+        playNext,
+        playPrev,
+        reset,
+        inGroupUpdate
+      }}
+    >
       {children}
     </SongContext.Provider>
   )
-} 
+}

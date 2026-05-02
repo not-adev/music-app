@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { socket } from "../socket";
 import { useAuth } from "@clerk/react";
-
+import { useSong } from "../context/SongContext";
 export default function useGlobalSocketListeners() {
     const { getToken } = useAuth();
+    const {reset,inGroupUpdate } = useSong()
 
     useEffect(() => {
         const handleConnect = async () => {
@@ -18,6 +19,7 @@ export default function useGlobalSocketListeners() {
 
         const handleGroupLive = (data) => {
             console.log("A group went live:", data);
+            reset(true)
             alert("gorup is live")
 
         };

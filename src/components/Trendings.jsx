@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSong } from '../context/SongContext'
-
+import playSong from '../utilities/playSong'
 const Trendings = () => {
   const { updateStreamUrl, currentSong } = useSong()
   const [trendings, setTrendings] = useState([])
@@ -9,24 +9,18 @@ const Trendings = () => {
   const [error, setError] = useState(null)
   const [loadingSongId, setLoadingSongId] = useState('')
 
-  const { streamUrl } = useSong();
+  const { streamUrl ,isInGroup} = useSong();
 
 
   const handlePlayClick = async (videoId, title, thumbnailUrl, channelTitle) => {
     try {
       setLoadingSongId(videoId)
-      const backendUrl = import.meta.env.VITE_BACKEND_URL
-      const response = await axios.get(`${backendUrl}/stream/${videoId}`)
-      const streamUrl = response.data.data
-      const newObject = { streamUrl: streamUrl, title: title, thumbnailUrl: thumbnailUrl, channelTitle: channelTitle }
-      console.log(newObject)
-      updateStreamUrl(newObject)
-
-
+      const newSong = {videoId ,  title: title, thumbnailUrl: thumbnailUrl, channelTitle: channelTitle }
+      await playSong(newSong, updateStreamUrl,isInGroup)
     } catch (err) {
       console.error('Failed to get stream URL:', err)
     }
-    finally{
+    finally {
       setLoadingSongId('')
     }
   }
@@ -41,7 +35,7 @@ const Trendings = () => {
       setError(null);
       try {
         const cached = sessionStorage.getItem("trendings");
-  
+
         if (cached) {
           let data = await JSON.parse(cached)
           setTrendings(data);
@@ -84,7 +78,7 @@ const Trendings = () => {
         <div className="trending-loading">Loading trendings...</div>
       )}
 
-     {error && <div className="recent-error">{error}</div>}
+      {error && <div className="recent-error">{error}</div>}
 
       {!loading && !error && (
         <div className="trending-grid">
@@ -110,10 +104,10 @@ const Trendings = () => {
                       onClick={() => handlePlayClick(videoId, title, thumbnailUrl, channelTitle)}
                       className="play-button"
                     >
-                   {loadingSongId === videoId ? 
-                   <img src='/buffer.gif' className='w-full h-full bg-cover'>  
-                   </img>
-                    : "▶"}
+                      {loadingSongId === videoId ?
+                        <img src='/buffer.gif' className='w-full h-full bg-cover'>
+                        </img>
+                        : "▶"}
                     </button>
 
                   </div>

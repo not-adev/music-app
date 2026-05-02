@@ -6,7 +6,7 @@ import getStreamUrl from "../utilities/getStreamUrl";
 const RenderSearchSongs = ({ songs = [] }) => {
     const [loadingId, setLoadingId] = useState(null);
     const [loadingAddButton, setLoadingAddButton] = useState(null)
-    const { updateStreamUrl, addToQueue } = useSong();
+    const { updateStreamUrl, addToQueue , isInGroup } = useSong();
     const handlePlay = async (song) => {
         const videoId = song?.id?.videoId || song?.id;
         console.log("hihihihi")
@@ -21,7 +21,7 @@ const RenderSearchSongs = ({ songs = [] }) => {
                     song?.snippet?.thumbnails?.default?.url,
                 channelTitle: song?.snippet?.channelTitle,
             };
-            await playSong(newObject, updateStreamUrl)
+            await playSong(newObject, updateStreamUrl , isInGroup)
         } catch (err) {
             console.error("Failed to play song:", err);
         } finally {

@@ -1,7 +1,11 @@
 import axios from "axios";
+const playSong = async ({ videoId, title, thumbnailUrl, channelTitle }, updateStreamUrl , isInGroup=false) => {
 
-const playSong = async ({ videoId, title, thumbnailUrl, channelTitle },updateStreamUrl) => {
   try {
+    if(isInGroup){
+      console.log('in Group ')
+      return 
+    }
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const response = await axios.get(`${backendUrl}/stream/${videoId}`);

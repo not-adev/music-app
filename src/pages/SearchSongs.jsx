@@ -9,7 +9,7 @@ export default function SerchSong() {
     const [showSongList, seTshowSongList] = useState(false)
     const [songData, setSongData] = useState([])
     const [loading, setLoading] = useState(false);
-    const { updateStreamUrl } = useSong()
+    const { updateStreamUrl,isInGroup } = useSong()
     async function SerachSong(e) {
         e.preventDefault();
         try {
@@ -54,7 +54,7 @@ export default function SerchSong() {
                 thumbnailUrl: song.thumbnailUrl,
                 channelTitle: song.channelTitle
             }
-            await playSong(perams, updateStreamUrl)
+            await playSong(perams, updateStreamUrl,isInGroup)
         } catch (error) {
             console.log(error.message)
         }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/react";
-
+import { socket } from "../socket";
+import {handleJoinEmitCallback} from '../utilities/socket/joinRoomEmit.js'
 export default function MyGroup() {
   const { getToken } = useAuth();
 
@@ -23,7 +24,7 @@ export default function MyGroup() {
             },
           }
         );
-
+        console.log(response.data.data)
         setGroups(response.data.data);
       } catch (err) {
         console.error(err);
@@ -35,6 +36,11 @@ export default function MyGroup() {
 
     fetchGroups();
   }, []);
+
+
+  const joinGroup = (group) => {
+    socket.emit("room:join", group ,handleJoinEmitCallback)
+  }
 
   if (loading) {
     return (
@@ -119,6 +125,7 @@ export default function MyGroup() {
                 </div>
 
                 <button
+                  onClick={() => joinGroup(group)}
                   disabled={!group.live}
                   className={`w-full !mt-5 !py-2 rounded-xl font-semibold transition
     ${group.live

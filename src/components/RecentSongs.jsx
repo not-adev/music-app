@@ -9,7 +9,7 @@ export default function RecentSongs() {
   const [playingId, setPlayingId] = useState(null);
 
   const { getToken } = useAuth();
-  const { updateStreamUrl } = useSong();
+  const { updateStreamUrl, inGroupUpdate } = useSong();
 
   useEffect(() => {
     const fetchRecentSongs = async () => {
@@ -37,7 +37,7 @@ export default function RecentSongs() {
   async function onClickPlay(song) {
     try {
       setPlayingId(song._id);
-
+     
       await updateStreamUrl({
         streamUrl: song.streamUrl,
         title: song.title,
@@ -86,10 +86,9 @@ export default function RecentSongs() {
               <button
                 onClick={() => onClickPlay(song)}
                 className={`absolute inset-0 flex items-center justify-center bg-black/50 transition
-                  ${
-                    playingId === song._id
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
+                  ${playingId === song._id
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100"
                   }
                 `}
               >
