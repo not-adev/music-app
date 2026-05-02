@@ -64,7 +64,7 @@ const MiniPlayer = () => {
         max={duration || 0}
         value={currentTime}
         onChange={handleSeek}
-        className="absolute top-0 left-0 w-full  opacity-0 group-hover:opacity-85 z-20 group-hover:opaci cursor-pointer"
+        className="absolute top-0 left-0 w-full  md:opacity-0 group-hover:opacity-85 z-20 group-hover:opaci cursor-pointer"
       />
       {/* Animated Progress Background */}
       <div className='absolute z-0  inset-0 pointer-events-none'>

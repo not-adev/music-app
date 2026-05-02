@@ -50,7 +50,7 @@ function App() {
             onClick={() => setSidebarOpen(false)}
           ></div>
         )}
-        <div className="fixed bottom-3 z-30  flex justify-center left-0 right-0  pb-40" >
+        <div className="fixed bottom-3 z-30  flex justify-center left-0 right-0 !mx-2 !p-1" >
           <MiniPlayer />
 
         </div>

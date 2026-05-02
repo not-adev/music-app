@@ -14,14 +14,14 @@ const Right = ({ click_function }) => {
             </div>
 
             <br />
-            <h2 className="text-3xl font-bold !mb-2">Trendings </h2>
+            <h2 className="text-3xl font-bold !m-2">Trendings </h2>
                 <Trendings />
 
 
-            <h2 className="text-3xl font-bold !mb-2">Recent songs </h2>
+            <h2 className="text-3xl font-bold !m-2">Recent songs </h2>
                 <RecentSongs />
 
-            <h2 className="text-3xl font-bold !mb-2">My Groups</h2>
+            <h2 className="text-3xl font-bold !m-2">My Groups</h2>
                 <MyGroup />
 
             <h2 className="heading-polular-artist">Album </h2>

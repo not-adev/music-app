@@ -78,7 +78,7 @@ const Trendings = () => {
   }, [])
 
   return (
-    <div className="trending-page">
+    <div className="trending-page !m-1">
 
       {loading && (
         <div className="trending-loading">Loading trendings...</div>
