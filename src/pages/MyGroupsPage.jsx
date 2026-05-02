@@ -3,11 +3,18 @@ import axios from "axios";
 import { useAuth } from "@clerk/react";
 import DisplayMyGroups from "../components/DisplayMyGroups";
 import { socket } from "../socket";
+import AdminRequestPanel from "../components/AdminRequestPanel";
 export default function MyOwnedGroups() {
     const { getToken } = useAuth();
-
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedGroup, setSelectedGroup] = useState(null);
+    const [showPanel, setShowPanel] = useState(false);
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const [requestLoading, setRequestLoading] = useState({
+        userId: null,
+        action: null,
+    });
 
     useEffect(() => {
         fetchOwnedGroups();
@@ -17,7 +24,6 @@ export default function MyOwnedGroups() {
         try {
 
             const token = await getToken();
-            const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
             const res = await axios.get(
                 `${backendUrl}/groupCrud/getOwedGruops`,
@@ -28,7 +34,6 @@ export default function MyOwnedGroups() {
                 }
             );
             console.log(res.data)
-
             setGroups(res.data.data);
         } catch (err) {
             console.error(err);
@@ -40,9 +45,8 @@ export default function MyOwnedGroups() {
     const deleteGroup = async (groupId) => {
         try {
             const token = await getToken();
-
             await axios.delete(
-                `${import.meta.env.VITE_BACKEND_URL}/groupCrud/delete/${groupId}`,
+                `${backendUrl}/groupCrud/delete/${groupId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -97,14 +101,68 @@ export default function MyOwnedGroups() {
         }
     };
 
-    const manageRequests = (group) => {
-        console.log("Manage Requests:", group);
-        // Open modal / navigate to request management page
+    const manageRequests = async (group) => {
+        try {
+            const token = await getToken();
+            const response = await axios.get(
+                `${backendUrl}/groupCrud/getRequest?groupId=${group._id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log(response.data.data)
+            setSelectedGroup(response.data.data);
+            setShowPanel(true);
+
+        } catch (error) {
+            console.log(error)
+        }
+
     };
 
     const editGroup = (group) => {
         console.log("Edit Group:", group);
         // Open edit modal/page
+    };
+
+    const handleAccept = async (req) => {
+        try {
+            setRequestLoading({
+                userId: req._id,
+                action: "accept",
+            });
+
+            const token = await getToken();
+
+            await axios.get(
+                `${backendUrl}/groupCrud/acceptRequest?groupId=${selectedGroup._id}&userId=${req._id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setSelectedGroup(prev => ({
+                ...prev,
+                requests: prev.requests.filter(
+                    request => request._id !== req._id
+                )
+            }));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setRequestLoading({
+                userId: null,
+                action: null,
+            });
+        }
+    };
+
+    const handleReject = (req) => {
+        console.log("reject:", req);
     };
 
     if (loading) {
@@ -139,6 +197,17 @@ export default function MyOwnedGroups() {
                     </div>
                 )}
             </div>
+
+            <AdminRequestPanel
+                isOpen={showPanel}
+                onClose={() => setShowPanel(false)}
+                requests={selectedGroup?.requests || []}
+                onAccept={handleAccept}
+                onReject={handleReject}
+                requestLoading={requestLoading}
+            />
         </div>
+
+
     );
 }

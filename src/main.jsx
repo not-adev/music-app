@@ -4,16 +4,19 @@ import './index.css'
 import App from './screen/App.jsx'
 import { SongProvider } from './context/SongContext.jsx'
 import { ClerkProvider } from '@clerk/react'
-
 import { SocketProvider } from './context/SocketContext.jsx'
+import { GroupProvider } from './context/GroupContext.jsx'
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-  createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ClerkProvider publishableKey={clerkPubKey}>
       <SongProvider>
         <SocketProvider>
-          <App />
+          <GroupProvider>
+
+            <App />
+          </GroupProvider>
         </SocketProvider>
       </SongProvider>
     </ClerkProvider>
