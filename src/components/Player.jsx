@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSong } from '../context/SongContext'
-
+import { socket } from '../socket'
 const MiniPlayer = () => {
   const { currentSong, playNext, playPrev, isInGroup } = useSong()
   const audioRef = useRef(null)
@@ -16,6 +16,13 @@ const MiniPlayer = () => {
       setIsPlaying(true)
     }
   }, [currentSong])
+
+  useEffect(() => {
+   
+   
+   
+  }, [])
+  
 
   const togglePlay = () => {
     if (!audioRef.current) return

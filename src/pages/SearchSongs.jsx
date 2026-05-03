@@ -30,6 +30,7 @@ export default function SerchSong() {
                 throw new Error('No trending songs found')
             }
             console.log(results)
+            console.log(results)
             setSongData(results)
             seTshowSongList(true)
         } catch (error) {

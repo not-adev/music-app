@@ -4,7 +4,7 @@ import { useAuth } from "@clerk/react";
 import { useSong } from "../context/SongContext";
 export default function useGlobalSocketListeners() {
     const { getToken } = useAuth();
-    const {reset,inGroupUpdate } = useSong()
+    const { reset, inGroupUpdate } = useSong()
 
     useEffect(() => {
         const handleConnect = async () => {
@@ -16,27 +16,34 @@ export default function useGlobalSocketListeners() {
         const handleDisconnect = () => {
             console.log("Socket disconnected");
         };
-
+        
         const handleGroupLive = (data) => {
             console.log("A group went live:", data);
-            reset(true)
             alert("gorup is live")
-
+            
         };
-
+    
         const handleGroupEnded = (data) => {
-            console.log("Group ended:", data);
+            console.log("room ended:", data);
+            alert('room ended ')
+            reset(false)
         };
 
         const handlePendingRequest = (data) => {
             console.log("New pending request:", data);
         };
 
+        const handleError = (error) => {
+            console.log(error.message)
+            alert(error.message)
+        }
+
         socket.on("connect", handleConnect);
         socket.on("disconnect", handleDisconnect);
         socket.on("room:live", handleGroupLive);
         socket.on("room:ended", handleGroupEnded);
         socket.on("pending-request", handlePendingRequest);
+        socket.on("error", handleError);
 
         return () => {
             socket.off("connect", handleConnect);

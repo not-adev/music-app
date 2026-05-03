@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/react";
 import { socket } from "../socket";
-import {handleJoinEmitCallback} from '../utilities/socket/joinRoomEmit.js'
+import { useSong } from "../context/SongContext.jsx";
+import { useGroup } from "../context/GroupContext.jsx";
+
 export default function MyGroup() {
   const { getToken } = useAuth();
-
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { inGroupUpdate, reset, isInGroup } = useSong();
+  let selectedGroup = useRef({})
+  const { updateLiveGroup } = useGroup();
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -24,7 +28,7 @@ export default function MyGroup() {
             },
           }
         );
-        console.log(response.data.data)
+
         setGroups(response.data.data);
       } catch (err) {
         console.error(err);
@@ -34,13 +38,31 @@ export default function MyGroup() {
       }
     };
 
+    const handleRoomJoined = (data) => {
+      if (data.currentSong) {
+        inGroupUpdate(data.currentSong);
+      } else {
+        reset(true);
+      }
+      console.log(data)
+      updateLiveGroup(selectedGroup.current);
+      
+    };
+
+    socket.on("room:joined", handleRoomJoined);
+
     fetchGroups();
+
+    return () => {
+      socket.off("room:joined", handleRoomJoined);
+    };
   }, []);
 
-
   const joinGroup = (group) => {
-    socket.emit("room:join", group ,handleJoinEmitCallback)
-  }
+    if (isInGroup) return;
+    selectedGroup.current = group
+    socket.emit("room:join", group);
+  };
 
   if (loading) {
     return (
@@ -74,36 +96,30 @@ export default function MyGroup() {
                 key={group._id}
                 className="rounded-3xl border border-white/10 bg-zinc-900/80 backdrop-blur-lg !p-6 shadow-xl hover:scale-[1.02] hover:border-red-500/40 transition-all duration-300"
               >
-                {/* Top Row */}
                 <div className="flex justify-between items-start">
-                  <h2 className="text-xl font-semibold truncate">
-                    {group.name}
-                  </h2>
+                  <h2 className="text-xl font-semibold truncate">{group.name}</h2>
 
                   <div className="flex flex-col items-end !gap-2">
                     <span
                       className={`text-xs !px-3 !py-1 rounded-full font-medium
-            ${group.publicPrivate
+                        ${group.publicPrivate
                           ? "bg-red-500/20 text-red-400"
-                          : "bg-emerald-500/20 text-emerald-400"
-                        }`}
+                          : "bg-emerald-500/20 text-emerald-400"}`}
                     >
                       {group.publicPrivate ? "Private" : "Public"}
                     </span>
 
                     <span
                       className={`text-xs !px-3 !py-1 rounded-full font-semibold
-            ${group.live
+                        ${group.live
                           ? "bg-green-500/20 text-green-400"
-                          : "bg-zinc-700 text-zinc-300"
-                        }`}
+                          : "bg-zinc-700 text-zinc-300"}`}
                     >
                       {group.live ? "● LIVE" : "● OFFLINE"}
                     </span>
                   </div>
                 </div>
 
-                {/* Mode */}
                 <div className="!mt-4 flex items-center !gap-2">
                   <span className="text-zinc-400 text-sm">Mode:</span>
                   <span className="!px-2 !py-1 rounded-lg bg-zinc-800 text-sm font-medium">
@@ -111,7 +127,6 @@ export default function MyGroup() {
                   </span>
                 </div>
 
-                {/* Members */}
                 <div className="!mt-3 flex items-center !gap-2">
                   <span className="text-zinc-400 text-sm">Members:</span>
                   <span className="text-white font-medium">
@@ -119,21 +134,23 @@ export default function MyGroup() {
                   </span>
                 </div>
 
-                {/* Created Date */}
                 <div className="!mt-4 text-xs text-zinc-500">
                   Created {new Date(group.createdAt).toLocaleDateString()}
                 </div>
 
                 <button
                   onClick={() => joinGroup(group)}
-                  disabled={!group.live}
+                  disabled={!group.live || isInGroup}
                   className={`w-full !mt-5 !py-2 rounded-xl font-semibold transition
-    ${group.live
+                    ${group.live && !isInGroup
                       ? "bg-red-600 hover:bg-red-500 text-black cursor-pointer"
-                      : "bg-zinc-700 text-zinc-400 cursor-not-allowed"
-                    }`}
+                      : "bg-zinc-700 text-zinc-400 cursor-not-allowed"}`}
                 >
-                  {group.live ? "Join Group" : "Group Offline"}
+                  {!group.live
+                    ? "Group Offline"
+                    : isInGroup
+                    ? "Already In Room"
+                    : "Join Group"}
                 </button>
               </div>
             ))}

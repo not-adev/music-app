@@ -21,6 +21,8 @@ import AuthSync from '../components/AuthSync.jsx'
 import { useSocketAuth } from '../useSocketAuth';
 import CreateGroupPage from '../pages/CreateGroupPage.jsx';
 import MyOwnedGroups from '../pages/MyGroupsPage.jsx';
+import InsideAgroup from '../components/IsideAgroup.jsx';
+
 function App() {
   useSocketAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -52,7 +54,10 @@ function App() {
         )}
         <div className="fixed bottom-3 z-30  flex justify-center left-0 right-0 !mx-2 !p-1" >
           <MiniPlayer />
+          
 
+          <InsideAgroup/>
+        
         </div>
         <div className={`left ${sidebarOpen ? 'sidebar-open' : ''}`}>
           <Left />
