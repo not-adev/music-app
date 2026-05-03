@@ -4,13 +4,18 @@ import { useAuth } from "@clerk/react";
 import DisplayMyGroups from "../components/DisplayMyGroups";
 import { socket } from "../socket";
 import AdminRequestPanel from "../components/AdminRequestPanel";
+import { useSong } from "../context/SongContext";
+import { useGroup } from "../context/GroupContext";
 export default function MyOwnedGroups() {
     const { getToken } = useAuth();
+    const { inGroupUpdateQue, reset, isInGroup, setIsInGroup ,inGroupUpdateCurrentIndex} = useSong();
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const [showPanel, setShowPanel] = useState(false);
+    const { updateLiveGroup } = useGroup()
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const [requestLoading, setRequestLoading] = useState({
         userId: null,
         action: null,
@@ -60,45 +65,52 @@ export default function MyOwnedGroups() {
         }
     };
 
-    const toggleLive = async (groupId, status) => {
-        // socket emits for making group live and create a session 
+    const toggleLive = async (groupId, status, group) => {
         if (!status) {
-            socket.emit('room:create', { groupId }, (response) => {
-                if (response.success) {
-                    setGroups((prev) =>
-                        prev.map((g) =>
-                            g._id === groupId
-                                ? { ...g, live: true }
-                                : g
-                        )
-                    );
+            socket.emit("room:create", { groupId }, (response) => {
+                if (!response.success) {
+                    alert(response.message || "Couldn't start session");
+                    return;
                 }
-                else {
-                    console.log(response.message)
-                    alert('cant make group alive try again later ')
-                }
+
+                setGroups(prev =>
+                    prev.map(g =>
+                        g._id === groupId
+                            ? { ...g, live: true }
+                            : g
+                    )
+                );
+
+                setIsInGroup(true);
+                console.log(response)
+                const newObject = {sessionId :response?.data?.session?._id , name : group.name , admin : true }
+                console.log(newObject)
+                updateLiveGroup(newObject);
+                inGroupUpdateQue(response.queue || []);
+                inGroupUpdateCurrentIndex(response.currentIndex || 0);
+            });
+
+            return;
+        }
+
+        const confirmed = confirm("Do you really want to end this session?");
+        if (!confirmed) return;
+
+        socket.emit("room:delete", {}, (response) => {
+            if (!response.success) {
+                alert(response.message || "Failed to end session");
+                return;
             }
 
-            )
-
-        }
-        else if (status) {
-            const pakka = confirm('do you realy want to end this session ')
-            if (pakka) {
-
-                socket.emit('room:delete', {}, (res) => {
-                    if (res.success) {
-                        setGroups((prev) =>
-                            prev.map((g) =>
-                                g._id === groupId
-                                    ? { ...g, live: false }
-                                    : g
-                            )
-                        );
-                    }
-                })
-            }
-        }
+            setGroups(prev =>
+                prev.map(g =>
+                    g._id === groupId
+                        ? { ...g, live: false }
+                        : g
+                )
+            );
+            reset(false);
+        });
     };
 
     const manageRequests = async (group) => {
@@ -151,6 +163,8 @@ export default function MyOwnedGroups() {
                     request => request._id !== req._id
                 )
             }));
+
+            set
         } catch (error) {
             console.log(error);
         } finally {

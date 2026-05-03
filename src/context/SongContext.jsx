@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useAuth } from '@clerk/react'
 
 const SongContext = createContext()
@@ -24,8 +24,12 @@ export const SongProvider = ({ children }) => {
   const [queue, setQueue] = useState([])
   const [history, setHistory] = useState([])
   const [isInGroup, setIsInGroup] = useState(false)
-
+  const [currentIndex, setCurrentIndex] = useState(-1)
   const { getToken } = useAuth()
+
+
+
+
 
   const updateStreamUrl = async (songData) => {
     if (isInGroup) return
@@ -51,6 +55,11 @@ export const SongProvider = ({ children }) => {
     setCurrentSong(songData)
   }
 
+
+
+
+
+
   const addToQueue = (song) => {
     if (isInGroup || !song) return false
 
@@ -68,6 +77,11 @@ export const SongProvider = ({ children }) => {
     return true
   }
 
+
+
+
+
+
   const playNext = () => {
     if (queue.length === 0) return false
 
@@ -82,6 +96,11 @@ export const SongProvider = ({ children }) => {
 
     return true
   }
+
+
+
+
+
 
   const playPrev = () => {
     if (isInGroup) return
@@ -98,6 +117,10 @@ export const SongProvider = ({ children }) => {
     setHistory(prev => prev.slice(1))
   }
 
+
+
+
+
   const reset = (status) => {
     setIsInGroup(status)
     setCurrentSong(emptySong)
@@ -105,9 +128,57 @@ export const SongProvider = ({ children }) => {
     setHistory([])
   }
 
-  const inGroupUpdate = (songData) => {
-    setCurrentSong(songData)
+
+
+
+
+
+
+  const inGroupUpdateCurrentSong = () => {
+    setCurrentSong(queue[currentIndex])
   }
+
+
+
+
+
+  const inGroupUpdateQue = (queue) => {
+    setQueue(queue)
+  }
+
+
+
+
+
+  const inGroupUpdateCurrentIndex = (index) => {
+    console.log(index)
+    if (currentIndex === index) {
+      return
+    }
+    setCurrentIndex(index)
+  }
+
+
+
+
+
+  useEffect(() => {
+    if (!isInGroup) {
+      console.log("not in group ")
+      return
+    };
+
+    const nextSong = queue[currentIndex] || emptySong;
+    console.log(nextSong)
+    console.log(currentSong)
+    if (nextSong.songId !== currentSong.songId) {
+      setCurrentSong(nextSong);
+    }
+  }, [queue, currentIndex, isInGroup]);
+
+
+
+
 
   return (
     <SongContext.Provider
@@ -121,7 +192,10 @@ export const SongProvider = ({ children }) => {
         playNext,
         playPrev,
         reset,
-        inGroupUpdate
+        setIsInGroup,
+        inGroupUpdateCurrentSong,
+        inGroupUpdateQue,
+        inGroupUpdateCurrentIndex
       }}
     >
       {children}

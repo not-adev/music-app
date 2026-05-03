@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSong } from '../context/SongContext'
 import { socket } from '../socket'
+import { useGroup } from '../context/GroupContext'
 const MiniPlayer = () => {
   const { currentSong, playNext, playPrev, isInGroup } = useSong()
   const audioRef = useRef(null)
-
+  const { liveGroup } = useGroup()
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -17,12 +18,6 @@ const MiniPlayer = () => {
     }
   }, [currentSong])
 
-  useEffect(() => {
-   
-   
-   
-  }, [])
-  
 
   const togglePlay = () => {
     if (!audioRef.current) return
@@ -51,6 +46,9 @@ const MiniPlayer = () => {
   }
 
   const onSongEnd = () => {
+    if (isInGroup && liveGroup.admin) {
+      socket.emit("song:ended",{})
+    }
     const isNext = playNext()
     if (!isNext) setIsPlaying(false)
   }

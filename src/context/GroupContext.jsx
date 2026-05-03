@@ -7,19 +7,22 @@ export const useGroup = () => useContext(GroupContext);
 export const GroupProvider = ({ children }) => {
     const [liveGroup, setLiveGroup] = useState({
         sessionId: "",
-        name: ""
+        name: "" , 
+        admin : false 
     });
 
     const [groups, setGroups] = useState([]);
 
-    const updateLiveGroup = ({ sessionId, name }) => {
-        setLiveGroup({ sessionId, name });
+    const updateLiveGroup = ({ sessionId, name,admin=false }) => {
+        console.log(sessionId,name,admin)
+        setLiveGroup({ sessionId, name  ,admin});
     };
 
     const clearLiveGroup = () => {
         setLiveGroup({
             sessionId: "",
-            name: ""
+            name: "" , 
+            admin  : false ,
         });
     };
 

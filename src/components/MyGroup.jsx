@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/react";
 import { socket } from "../socket";
@@ -10,7 +10,7 @@ export default function MyGroup() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { inGroupUpdate, reset, isInGroup } = useSong();
+  const { inGroupUpdateQue, reset, isInGroup, setIsInGroup,inGroupUpdateCurrentIndex  } = useSong();
   let selectedGroup = useRef({})
   const { updateLiveGroup } = useGroup();
 
@@ -39,14 +39,12 @@ export default function MyGroup() {
     };
 
     const handleRoomJoined = (data) => {
-      if (data.currentSong) {
-        inGroupUpdate(data.currentSong);
-      } else {
-        reset(true);
-      }
-      console.log(data)
+      inGroupUpdateQue(data.queue || []);
+      inGroupUpdateCurrentIndex(data.sessionData.currentIndex || 0);
+      reset(true)
+      console.log("up" , selectedGroup.current)
       updateLiveGroup(selectedGroup.current);
-      
+      console.log(data);
     };
 
     socket.on("room:joined", handleRoomJoined);
@@ -60,7 +58,9 @@ export default function MyGroup() {
 
   const joinGroup = (group) => {
     if (isInGroup) return;
+
     selectedGroup.current = group
+    console.log(selectedGroup.current)
     socket.emit("room:join", group);
   };
 
@@ -149,8 +149,8 @@ export default function MyGroup() {
                   {!group.live
                     ? "Group Offline"
                     : isInGroup
-                    ? "Already In Room"
-                    : "Join Group"}
+                      ? "Already In Room"
+                      : "Join Group"}
                 </button>
               </div>
             ))}

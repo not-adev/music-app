@@ -4,10 +4,12 @@ import playSong from "../utilities/playSong";
 import { useSong } from "../context/SongContext";
 import getStreamUrl from "../utilities/getStreamUrl";
 import { socket } from "../socket";
+import { useGroup } from '../context/GroupContext'
 const RenderSearchSongs = ({ songs = [] }) => {
     const [loadingId, setLoadingId] = useState(null);
     const [loadingAddButton, setLoadingAddButton] = useState(null)
     const { updateStreamUrl, addToQueue, isInGroup } = useSong();
+    const {liveGroup} = useGroup()
     const handlePlay = async (song) => {
         const videoId = song?.id?.videoId || song?.id;
         try {
@@ -61,8 +63,11 @@ const RenderSearchSongs = ({ songs = [] }) => {
         }
     };
 
-    const addToGroup = ()=>{
-        socket.emit("")
+    const addToGroup = async (songInfo) => {
+        songInfo.sessionId = liveGroup.sessionId
+        console.log(liveGroup)
+        console.log(songInfo)
+        socket.emit("song:add",songInfo)
     }
 
     return (
@@ -106,7 +111,7 @@ const RenderSearchSongs = ({ songs = [] }) => {
                         </div>
 
                         {/* Buttons */}
-                        { !isInGroup &&
+                        {!isInGroup &&
                             <div className="flex gap-2 w-full sm:w-auto shrink-0">
                                 <button
                                     onClick={() => handlePlay(song)}
@@ -121,9 +126,12 @@ const RenderSearchSongs = ({ songs = [] }) => {
                                 </button>
                             </div>
                         }
-                        { isInGroup ? 
+                        {isInGroup ?
                             <div className="flex gap-2 w-full sm:w-auto shrink-0">
-                                <button onClick={() => addToGroup(song)} className="!px-4 !py-2 rounded-xl bg-red-700 text-white font-semibold hover:bg-red-900">
+                                <button onClick={() => addToGroup({
+                                    songId: videoId, thumbnailUrl, title
+                                })}
+                                    className="!px-4 !py-2 rounded-xl bg-red-700 text-white font-semibold hover:bg-red-900">
                                     {bufferAdd ? "Loading..." : "Add To Group"}
                                 </button>
                             </div> : ""

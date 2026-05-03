@@ -51,7 +51,7 @@ export default function DisplayMyGroups({
         </button>
 
         <button
-          onClick={() => onToggleLive(group._id ,group.live )}
+          onClick={() => onToggleLive(group._id ,group.live , group)}
           className={`!py-2 rounded-xl font-semibold
           ${
             group.live
