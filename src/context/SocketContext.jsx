@@ -8,19 +8,6 @@ export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider = ({ children }) => {
    useGlobalSocketListeners()
-  // useEffect(() => {
-  //   // socket.on("connect", () => {
-  //   //   console.log("Socket connected:", socket.id);
-  //   //   alert('connected succefuly ')
-  //   // });
-
-  //   useGlobalSocketListeners()
-  
-  //   return () => {
-  //     socket.off("connect");
-  //   };
-  // }, []);
-
   return (
     <SocketContext.Provider value={socket}>
       {children}

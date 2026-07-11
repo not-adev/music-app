@@ -5,6 +5,7 @@ import { useSong } from "../context/SongContext";
 import getStreamUrl from "../utilities/getStreamUrl";
 import { socket } from "../socket";
 import { useGroup } from '../context/GroupContext'
+import * as  SongRelatedEmits from "../utilities/socket/socetemits/songRelatedEmits";
 const RenderSearchSongs = ({ songs = [] }) => {
     const [loadingId, setLoadingId] = useState(null);
     const [loadingAddButton, setLoadingAddButton] = useState(null)
@@ -67,7 +68,7 @@ const RenderSearchSongs = ({ songs = [] }) => {
         songInfo.sessionId = liveGroup.sessionId
         console.log(liveGroup)
         console.log(songInfo)
-        socket.emit("song:add",songInfo)
+        SongRelatedEmits.songAddToGroupEmit(songInfo)
     }
 
     return (

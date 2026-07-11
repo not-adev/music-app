@@ -12,7 +12,7 @@ export default function GenreAnadSearchaBar({onClickPlay}) {
         { title: "Indie", image: `${url}/indie.jpg` },
         { title: "Romantic", image: `${url}/romantic.jpg` },
         { title: "Rock", image: `${url}/rock.jpg` },
-        { title: "HipHop", image: `${url}/hiphop.jpg` },
+        { title: "HipHop", image: `${url}/hip hop.jpg` },
         { title: "Electronic", image: `${url}/electronic.jpg` },
         { title: "Lofi", image: `${url}/lofi.jpg` },
         { title: "Sad", image: `${url}/sad.jpg` },

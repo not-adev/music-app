@@ -8,6 +8,7 @@ import Artist4 from '../components/Artist4'
 import Artist5 from '../components/Artist5'
 import Left from '../components/Left'
 import Trendings from '../components/Trendings'
+import { ToastContainer } from 'react-toastify';
 import RecentSongs from '../components/RecentSongs'
 import { useState } from 'react'
 import MiniPlayer from '../components/Player';
@@ -54,10 +55,10 @@ function App() {
         )}
         <div className="fixed bottom-3 z-30  flex justify-center left-0 right-0 !mx-2 !p-1" >
           <MiniPlayer />
-          
 
-          <InsideAgroup/>
-        
+
+          <InsideAgroup />
+
         </div>
         <div className={`left ${sidebarOpen ? 'sidebar-open' : ''}`}>
           <Left />
@@ -85,8 +86,7 @@ function App() {
 
             <Route path='/my-groups' element={
               <ProtectedRoute>
-
-               <MyOwnedGroups />
+                <MyOwnedGroups />
               </ProtectedRoute>
             } />
 
@@ -104,6 +104,7 @@ function App() {
           </Routes>
         </div>
       </section>
+      <ToastContainer/>
     </Router>
   )
 }

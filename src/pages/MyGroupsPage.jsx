@@ -85,9 +85,10 @@ export default function MyOwnedGroups() {
                 console.log(response)
                 const newObject = {sessionId :response?.data?.session?._id , name : group.name , admin : true }
                 console.log(newObject)
+                reset(true);
                 updateLiveGroup(newObject);
-                inGroupUpdateQue(response.queue || []);
-                inGroupUpdateCurrentIndex(response.currentIndex || 0);
+                // inGroupUpdateQue(response.queue || []);
+                // inGroupUpdateCurrentIndex(response.currentIndex || 0);
             });
 
             return;

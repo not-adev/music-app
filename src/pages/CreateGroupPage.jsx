@@ -42,8 +42,13 @@ export default function CreateGroupPage() {
             );
 
             console.log(response.data.data);
+            setGroupName("");
+            setMode("HOST");
+            setIsPrivate(false);
+            alert("Group created successfully!");
         } catch (err) {
             console.error("Failed to create group:", err);
+            alert("Failed to create group. Please try again.");
         } finally {
             setLoading(false);
         }

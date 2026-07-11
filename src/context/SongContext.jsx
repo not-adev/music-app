@@ -126,6 +126,7 @@ export const SongProvider = ({ children }) => {
     setCurrentSong(emptySong)
     setQueue([])
     setHistory([])
+    setCurrentIndex(-1)
   }
 
 
@@ -137,9 +138,6 @@ export const SongProvider = ({ children }) => {
   const inGroupUpdateCurrentSong = () => {
     setCurrentSong(queue[currentIndex])
   }
-
-
-
 
 
   const inGroupUpdateQue = (queue) => {
@@ -172,9 +170,9 @@ export const SongProvider = ({ children }) => {
     console.log(nextSong)
     console.log(currentSong)
     if (nextSong.songId !== currentSong.songId) {
-      setCurrentSong(nextSong);
+        inGroupUpdateCurrentSong();
     }
-  }, [queue, currentIndex, isInGroup]);
+  }, [ currentIndex, isInGroup]);
 
 
 
