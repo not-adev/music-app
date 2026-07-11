@@ -5,9 +5,9 @@ import { useSong } from "../context/SongContext";
 import { toast } from "react-toastify";
 export default function useGlobalSocketListeners() {
     const { getToken } = useAuth();
-    const notification = (msg)=> toast.success(msg)
-    const errorNotificatoin = (error)=> toast.error(error)
-    const { reset, inGroupUpdateCurrentSong, inGroupUpdateQue, inGroupUpdateCurrentIndex } = useSong()
+    const notification = (msg) => toast.success(msg)
+    const errorNotificatoin = (error) => toast.error(error)
+    const { reset, inGroupUpdateCurrentSong, inGroupUpdateQue, inGroupUpdateCurrentIndex  ,updateStartedAt} = useSong()
 
     useEffect(() => {
         const handleConnect = async () => {
@@ -41,10 +41,8 @@ export default function useGlobalSocketListeners() {
         const handleUpdateCurrentIndex = (data) => {
             console.log("updte in current index")
             inGroupUpdateCurrentIndex(data.currentIndex);
+            updateStartedAt(data.startedAt)
         }
-
-
-
 
         const handlePendingRequest = (data) => {
             console.log("New pending request:", data);
@@ -55,24 +53,30 @@ export default function useGlobalSocketListeners() {
             notification("Song is playing")
             console.log("song play data ", data)
             inGroupUpdateCurrentIndex(data.currentIndex)
+            console.log("startedAt", data.startedAt)
+            updateStartedAt(data.startedAt)
+            
         }
 
         const handleError = (error) => {
             console.log(error.message)
             errorNotificatoin(error.message)
         }
-        socket.on("song:play", haddleSongPlay);
+
+
         socket.on("connect", handleConnect);
         socket.on("disconnect", handleDisconnect);
         socket.on("room:live", handleGroupLive);
+        socket.on("room:ended", handleGroupEnded);
         socket.on("song:upDateCurrentIndex", handleUpdateCurrentIndex);
         socket.on("song:added", handleNewSongAdded)
-        socket.on("room:ended", handleGroupEnded);
+        socket.on("song:play", haddleSongPlay);
         socket.on("pending-request", handlePendingRequest);
         socket.on("error", handleError);
 
         return () => {
             socket.off("connect", handleConnect);
+            socket.off("song:play", haddleSongPlay);
             socket.off("disconnect", handleDisconnect);
             socket.off("room:live", handleGroupLive);
             socket.off("song:upDateCurrentIndex", handleUpdateCurrentIndex);

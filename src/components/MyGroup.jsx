@@ -10,7 +10,7 @@ export default function MyGroup() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { inGroupUpdateQue, reset, isInGroup, setIsInGroup,inGroupUpdateCurrentIndex  } = useSong();
+  const { inGroupUpdateQue, reset, isInGroup, setIsInGroup, inGroupUpdateCurrentIndex, updateStartedAt } = useSong();
   let selectedGroup = useRef({})
   const { updateLiveGroup } = useGroup();
 
@@ -39,12 +39,15 @@ export default function MyGroup() {
     };
 
     const handleRoomJoined = (data) => {
+      reset(true)
+      updateLiveGroup(selectedGroup.current);
       inGroupUpdateQue(data.queue || []);
       inGroupUpdateCurrentIndex(data.sessionData.currentIndex || 0);
-      reset(true)
-      console.log("up" , selectedGroup.current)
-      updateLiveGroup(selectedGroup.current);
-      console.log(data);
+      if (data.sessionData.startedAt) {
+        console.log("startedAt", data.sessionData.startedAt)
+        inGroupUpdateCurrentIndex(data.sessionData.currentIndex || 0);
+        updateStartedAt(data.sessionData.startedAt);
+      }
     };
 
     socket.on("room:joined", handleRoomJoined);
@@ -58,9 +61,7 @@ export default function MyGroup() {
 
   const joinGroup = (group) => {
     if (isInGroup) return;
-
     selectedGroup.current = group
-    console.log(selectedGroup.current)
     socket.emit("room:join", group);
   };
 
@@ -75,7 +76,7 @@ export default function MyGroup() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center text-red-500">
-        {error}
+        Cant load groups. Please try again later.
       </div>
     );
   }
@@ -84,7 +85,6 @@ export default function MyGroup() {
     <div className="min-h-screen text-white !p-6">
       <div className="max-w-7xl !mx-auto">
         <h1 className="text-3xl font-bold !mb-8">My Groups</h1>
-
         {groups.length === 0 ? (
           <div className="text-zinc-400 text-center text-lg">
             You are not in any groups yet.

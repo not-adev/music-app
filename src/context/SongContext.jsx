@@ -17,7 +17,7 @@ export const SongProvider = ({ children }) => {
     streamUrl: '',
     title: '',
     thumbnailUrl: '',
-    channelTitle: ''
+    channelTitle: '' 
   }
 
   const [currentSong, setCurrentSong] = useState(emptySong)
@@ -25,6 +25,7 @@ export const SongProvider = ({ children }) => {
   const [history, setHistory] = useState([])
   const [isInGroup, setIsInGroup] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(-1)
+  const [startedAt, setStartedAt ] = useState(null)
   const { getToken } = useAuth()
 
 
@@ -54,10 +55,6 @@ export const SongProvider = ({ children }) => {
 
     setCurrentSong(songData)
   }
-
-
-
-
 
 
   const addToQueue = (song) => {
@@ -121,19 +118,15 @@ export const SongProvider = ({ children }) => {
 
 
 
-  const reset = (status) => {
-    setIsInGroup(status)
-    setCurrentSong(emptySong)
-    setQueue([])
-    setHistory([])
-    setCurrentIndex(-1)
-  }
-
-
-
-
-
-
+  
+  
+  
+  
+  
+const updateStartedAt = (timestamp) => {
+  console.log("updateStartedAt called with timestamp:", timestamp);
+  setStartedAt(timestamp)
+}
 
   const inGroupUpdateCurrentSong = () => {
     setCurrentSong(queue[currentIndex])
@@ -175,6 +168,14 @@ export const SongProvider = ({ children }) => {
   }, [ currentIndex, isInGroup]);
 
 
+  const reset = (status) => {
+    setIsInGroup(status)
+    setCurrentSong(emptySong)
+    setQueue([])
+    setHistory([])
+    setCurrentIndex(-1)
+    updateStartedAt(null)
+  }
 
 
 
@@ -185,6 +186,8 @@ export const SongProvider = ({ children }) => {
         queue,
         history,
         isInGroup,
+        currentIndex , 
+        startedAt,
         updateStreamUrl,
         addToQueue,
         playNext,
@@ -193,7 +196,8 @@ export const SongProvider = ({ children }) => {
         setIsInGroup,
         inGroupUpdateCurrentSong,
         inGroupUpdateQue,
-        inGroupUpdateCurrentIndex
+        inGroupUpdateCurrentIndex,
+        updateStartedAt
       }}
     >
       {children}

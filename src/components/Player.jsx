@@ -3,7 +3,7 @@ import { useSong } from '../context/SongContext'
 import { socket } from '../socket'
 import { useGroup } from '../context/GroupContext'
 const MiniPlayer = () => {
-  const { currentSong, playNext, playPrev, isInGroup } = useSong()
+  const { currentSong, playNext, playPrev, isInGroup, queue, currentIndex, startedAt } = useSong()
   const audioRef = useRef(null)
   const { liveGroup } = useGroup()
   const [isPlaying, setIsPlaying] = useState(false)
@@ -18,6 +18,21 @@ const MiniPlayer = () => {
     }
   }, [currentSong])
 
+
+  function calculateCurrentTime() {
+    const elapsedMs = Date.now() - new Date(startedAt).getTime();
+    console.log("elapsedMs", elapsedMs)
+    return elapsedMs / 1000; // audio.currentTime expects seconds
+  }
+
+  useEffect(() => {
+    if (!isInGroup || !startedAt || !audioRef.current) return;
+    const seekTime = calculateCurrentTime();
+    console.log("Seeking to", seekTime);
+
+    audioRef.current.currentTime = seekTime;
+    setCurrentTime(seekTime);
+  }, [startedAt, isInGroup]);
 
   const togglePlay = () => {
     if (!audioRef.current) return
@@ -36,6 +51,11 @@ const MiniPlayer = () => {
   }
 
   const handleLoadedMetadata = () => {
+    if (isInGroup && startedAt) {
+      const seekTime = calculateCurrentTime();
+      audioRef.current.currentTime = seekTime
+      setCurrentTime(seekTime);
+    }
     setDuration(audioRef.current.duration)
   }
 
@@ -47,7 +67,8 @@ const MiniPlayer = () => {
 
   const onSongEnd = () => {
     if (isInGroup && liveGroup.admin) {
-      socket.emit("song:ended",{})
+      socket.emit("song:ended", { queue, currentIndex, sessionId: liveGroup.sessionId })
+      return
     }
     const isNext = playNext()
     if (!isNext) setIsPlaying(false)
